@@ -2,10 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+import FilterDropdown from './components/FilterDropdown/FilterDropdown.jsx'
+
 class App extends React.Component {
     render() {
         return(
-            <div>Hello World!</div>
+            <FilterDropdown />
         )
     }
 }
