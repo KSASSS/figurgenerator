@@ -17,6 +17,19 @@ class FilterDropdown extends React.Component {
     }
 
     render() {
-        
+        <ExpansionPanel>
+            <ExpansionPanelSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography className={classes.heading}>
+                Menynavn
+              </Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
     }
 }
