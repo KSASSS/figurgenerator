@@ -18,7 +18,7 @@ export default class FilterDropdown extends React.Component {
     super(props);
 
     this.state = {
-
+      
     }
   }
 
@@ -32,11 +32,11 @@ export default class FilterDropdown extends React.Component {
                 aria-controls="panel1a-content"
                 id="panel1a-header"
               >
-                <Typography>{this.props.tittel}</Typography>
+                <Typography>{this.props.title}</Typography>
               </ExpansionPanelSummary>
               
             <ExpansionPanelDetails>
-              <p>Valg</p>
+              <p>{this.props.values}</p>
             </ExpansionPanelDetails>
           </ExpansionPanel>
         </div>

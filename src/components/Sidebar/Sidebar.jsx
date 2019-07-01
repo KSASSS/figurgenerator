@@ -9,17 +9,19 @@ export default class Sidebar extends React.Component {
         super(props);
 
         this.state = {
-
+            regions: ['Drammen', 'Fredrikstad', 'Oslo'],
+            år: [2015, 2016, 2017],
+            indikatorer: ['Ind 1', 'Ind 2']
         }
     }
 
     render() {
       return (
         <div>
-            <FilterDropdown tittel='Region'/>
-            <FilterDropdown tittel='År'/>
-            <FilterDropdown tittel='Indikator'/>
-            <FilterDropdown tittel='Tjenesteprofil'/>
+            <FilterDropdown title='Region' values={this.state.regions}/>
+            <FilterDropdown title='År'/>
+            <FilterDropdown title='Indikator'/>
+            <FilterDropdown title='Tjenesteprofil'/>
         </div>
       )
     }
