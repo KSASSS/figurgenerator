@@ -42,6 +42,7 @@ export default class FilterCheckbox extends React.Component {
                     label = {values[i]}
                 />
             )
+            /** Creates a new state for each option */
             this.setState({[values[i]]: false});
         }
         this.setState({alternatives: checkboxArr, checked: clickedArr});

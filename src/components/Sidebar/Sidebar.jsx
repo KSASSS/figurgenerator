@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 
 /* Constants */
-import {indList, getMethod} from 'constants'
+import {indikatorURL, getMethod} from 'constants'
 
 /* Dropdown imports */
 import FilterDropdown from 'components/FilterDropdown/FilterDropdown.jsx'
@@ -21,21 +21,19 @@ export default class Sidebar extends React.Component {
     }
 
     componentDidMount() {
-        fetch(`${indList}`, getMethod)
+        fetch(`${indikatorURL}`, getMethod)
         .then(response => response.json())
         .then(result => {
-            this.setState({indikatorer: result});
-            console.log(this);
+            this.setState({indikatorer: result.slice(0, 5)});
             var tmpArr = [];
 
-        tmpArr.push(<FilterDropdown title='Region' values={this.state.regions}/>);
-        tmpArr.push(<FilterDropdown title='År' values={this.state.år}/>);
-        tmpArr.push(<FilterDropdown title='Indikator' values={this.state.indikatorer}/>);
+            tmpArr.push(<FilterDropdown key='region' title='Region' values={this.state.regions}/>);
+            tmpArr.push(<FilterDropdown key='år' title='År' values={this.state.år}/>);
+            tmpArr.push(<FilterDropdown key='indikator' title='Indikator' values={this.state.indikatorer}/>);
 
-        this.setState({content: tmpArr})
+            this.setState({content: tmpArr})
         })
-
-        
+   
     }
 
     render() {
