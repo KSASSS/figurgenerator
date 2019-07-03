@@ -10,6 +10,8 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 /* Brukes som tittel på dropdownsmenyene */
 import Typography from "@material-ui/core/Typography";
 
+import FilterCheckbox from 'components/FilterDropdown/FilterCheckbox.jsx';
+
 
 
 export default class FilterDropdown extends React.Component {
@@ -18,28 +20,27 @@ export default class FilterDropdown extends React.Component {
     super(props);
 
     this.state = {
-      
+      values: [],
     }
   }
 
-  
-    render() {
-      return (
-        <div>
-          <ExpansionPanel>
-              <ExpansionPanelSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-              >
-                <Typography>{this.props.title}</Typography>
-              </ExpansionPanelSummary>
-              
-            <ExpansionPanelDetails>
-              <p>{this.props.values}</p>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-        </div>
+  render() {
+    return (
+      <div>
+        <ExpansionPanel>
+          <ExpansionPanelSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <Typography>{this.props.title}</Typography>
+          </ExpansionPanelSummary>
+             
+          <ExpansionPanelDetails>
+            <FilterCheckbox values={this.props.values}/>
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+      </div>
       )
     }
 }
