@@ -50,6 +50,7 @@ export default class FilterCheckbox extends React.Component {
 
     /* Sets the state with corresponding name to true when checked, false when unchecked*/
     handleChange() {
+        this.props.updateFilterDropdown(event.target.value);
         this.setState({[event.target.value]: event.target.checked});
     };    
     

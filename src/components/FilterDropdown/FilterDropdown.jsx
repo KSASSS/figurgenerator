@@ -21,7 +21,15 @@ export default class FilterDropdown extends React.Component {
 
     this.state = {
       values: [],
+      checked: false,
     }
+
+    this.filterGotChosen = this.filterGotChosen.bind(this);
+  }
+
+  filterGotChosen(name) {
+    console.log('filterchosen - fdd');
+    this.props.updateSidebar(this.props.title, name)
   }
 
   render() {
@@ -37,7 +45,7 @@ export default class FilterDropdown extends React.Component {
           </ExpansionPanelSummary>
              
           <ExpansionPanelDetails>
-            <FilterCheckbox values={this.props.values}/>
+            <FilterCheckbox updateFilterDropdown={this.filterGotChosen} values={this.props.values}/>
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </div>
