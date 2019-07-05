@@ -9,7 +9,6 @@ import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 import ChosenFiltergroup from './ChosenFiltergroup';
-import { callbackify } from 'util';
 
 export default class ChosenFilterbox extends React.Component {
     constructor(props) {
@@ -18,6 +17,9 @@ export default class ChosenFilterbox extends React.Component {
         this.state = {
             groups: []
         }
+
+        this.chosenFilterGroupElement = React.createRef();
+        this.removeFilterGroup = this.removeFilterGroup.bind(this);
     }
 
     hasTitle(name) {
@@ -27,22 +29,45 @@ export default class ChosenFilterbox extends React.Component {
     addFilter(groupName, filterName) {
         var groupsArr = this.state.groups;
 
-        const exists = false;
+        const findTest = groupsArr.find(g => g.key === groupName);
 
-        var itemsProcessed = 0;
-
-        if (groupsArr.length === 0) {
-            groupsArr.push(<ChosenFiltergroup key={groupName} title={groupName}/>);
+        if (findTest === undefined) {
+            groupsArr.push(<ChosenFiltergroup key={groupName} title={groupName} firstVal={filterName} removeFilterGroup={this.removeFilterGroup} ref={this.chosenFilterGroupElement}/>);
             this.setState({groups: groupsArr});
-            return;
-        }
 
+        } else {
+            this.chosenFilterGroupElement.current.addFilterButton(filterName);
+        }
         
+    }
+
+    removeFilter(groupName, filterName) {
+        this.chosenFilterGroupElement.current.removeFilterButton(filterName);
+
+        console.log('gotta remove ' + filterName + ' from ' + groupName);
+    }
+
+    removeFilterGroup(filterGroupName) {
+        var tmp = this.state.groups;
+
+        var index = tmp.indexOf(tmp.find(fg => fg.key === filterGroupName));
+        
+        if (index !== -1) {
+            tmp.splice(index, 1);
+            this.setState({groups: tmp});
+        }
     }
 
     render() {
         return(
             <div>
+                <Typography>{this.props.title}</Typography>
+                {this.state.groups.map((item) =>
+                    item
+                )}
+            </div>
+            /** vfilterboks som dropdown
+            <div class='chosenfilterbox'>
                 <ExpansionPanel>
                     <ExpansionPanelSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -56,6 +81,7 @@ export default class ChosenFilterbox extends React.Component {
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
             </div>
+            */
         );
     }
 }

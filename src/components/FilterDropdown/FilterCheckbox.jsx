@@ -52,7 +52,7 @@ export default class FilterCheckbox extends React.Component {
 
     /* Sets the state with corresponding name to true when checked, false when unchecked*/
     handleChange() {
-        this.props.updateFilterDropdown(event.target.value);
+        this.props.updateFilterDropdown(event.target.value, event.target.checked);
         this.setState({[event.target.value]: event.target.checked});
     };    
     
@@ -62,7 +62,7 @@ export default class FilterCheckbox extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className='filtercheckbox'>
                 <FormControl component = "fieldset">
                     <FormGroup row={true}>      
                         {this.state.alternatives}

@@ -8,6 +8,9 @@ import FilterDropdown from 'components/FilterDropdown/FilterDropdown.jsx'
 
 import ChosenFilterbox from 'components/ChosenFilterbox/ChosenFilterbox'
 
+/* Grid imports*/
+import Grid from "@material-ui/core/Grid";
+
 export default class Sidebar extends React.Component {
     
     constructor(props) {
@@ -24,6 +27,7 @@ export default class Sidebar extends React.Component {
 
         this.filterGotChosen = this.filterGotChosen.bind(this);
         this.filterGotRemoved = this.filterGotRemoved.bind(this);
+
         this.chosenFilterboxElement = React.createRef();
     }
 
@@ -45,8 +49,14 @@ export default class Sidebar extends React.Component {
    
     }
 
-    filterGotChosen(groupName, filterName) {
-        this.chosenFilterboxElement.current.addFilter(groupName, filterName);
+    filterGotChosen(groupName, filterName, checked) {
+        if (checked) {
+            this.chosenFilterboxElement.current.addFilter(groupName, filterName);
+        } else {
+            this.chosenFilterboxElement.current.removeFilter(groupName, filterName);
+        }
+
+        
         //var chosenFilter = [<ChosenFiltergroup key='vfiltergrp' title='Valgte Filter' groups={groupName}/>];
         //this.setState({chosenFilters: chosenFilter})
     }
@@ -57,9 +67,15 @@ export default class Sidebar extends React.Component {
 
     render() {
       return (
-        <div>
-            {this.state.chosenFilters}
-            {this.state.filterDropdowns}
+        <div className='navbar'>
+            
+                <Grid item xs>
+                    {this.state.chosenFilters} 
+                </Grid>
+                <Grid item xs>
+                    {this.state.filterDropdowns}
+                </Grid>
+            
         </div>
       )
     }

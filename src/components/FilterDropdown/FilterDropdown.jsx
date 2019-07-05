@@ -21,20 +21,19 @@ export default class FilterDropdown extends React.Component {
 
     this.state = {
       values: [],
-      checked: false,
     }
 
     this.filterGotChosen = this.filterGotChosen.bind(this);
   }
 
-  filterGotChosen(name) {
+  filterGotChosen(name, checked) {
     console.log('filterchosen - fdd');
-    this.props.updateSidebar(this.props.title, name)
+    this.props.updateSidebar(this.props.title, name, checked);
   }
 
   render() {
     return (
-      <div>
+      <div className='filterdropdown'>
         <ExpansionPanel>
           <ExpansionPanelSummary
             expandIcon={<ExpandMoreIcon />}
