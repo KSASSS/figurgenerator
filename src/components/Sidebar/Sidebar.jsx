@@ -6,7 +6,7 @@ import {indikatorURL, getMethod} from 'constants'
 /* Dropdown imports */
 import FilterDropdown from 'components/FilterDropdown/FilterDropdown.jsx'
 
-import ChosenFiltergroup from 'components/ChosenFilterbox/ChosenFiltergroup'
+import ChosenFilterbox from 'components/ChosenFilterbox/ChosenFilterbox'
 
 export default class Sidebar extends React.Component {
     
@@ -23,10 +23,12 @@ export default class Sidebar extends React.Component {
         }
 
         this.filterGotChosen = this.filterGotChosen.bind(this);
+        this.filterGotRemoved = this.filterGotRemoved.bind(this);
+        this.chosenFilterboxElement = React.createRef();
     }
 
     componentDidMount() {
-        this.setState({chosenFilters: <ChosenFiltergroup key='vfiltergrp' title='Valgte Filter'/>})
+        this.setState({chosenFilters: <ChosenFilterbox ref={this.chosenFilterboxElement} key='vfiltergrp' title='Valgte Filter'/>})
 
         fetch(`${indikatorURL}`, getMethod)
         .then(response => response.json())
@@ -44,8 +46,13 @@ export default class Sidebar extends React.Component {
     }
 
     filterGotChosen(groupName, filterName) {
-        var chosenFilter = [<ChosenFiltergroup key='vfiltergrp' title='Valgte Filter' groups={groupName}/>];
-        this.setState({chosenFilters: chosenFilter})
+        this.chosenFilterboxElement.current.addFilter(groupName, filterName);
+        //var chosenFilter = [<ChosenFiltergroup key='vfiltergrp' title='Valgte Filter' groups={groupName}/>];
+        //this.setState({chosenFilters: chosenFilter})
+    }
+
+    filterGotRemoved() {
+        console.log('filterGotRemoved');
     }
 
     render() {

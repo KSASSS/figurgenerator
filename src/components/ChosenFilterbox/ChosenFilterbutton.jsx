@@ -7,8 +7,7 @@ export default class ChosenFilterbutton extends React.Component {
 
     render() {
         return(
-            /** Tmp to avoid errors */
-            1
+           <p></p>
         );
     }
 }

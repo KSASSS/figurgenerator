@@ -27,11 +27,10 @@ export default class FilterCheckbox extends React.Component {
     componentDidMount() {
         const values = this.props.values;
 
-        var checkboxArr = [];
-        var clickedArr = [];
-
+        var alternativesArr = [];
+        
         for (var i = 0; i < values.length; i++) {
-            checkboxArr.push(
+            alternativesArr.push(
                 <FormControlLabel key = {values[i]}
                     control = {
                         <Checkbox
@@ -45,7 +44,10 @@ export default class FilterCheckbox extends React.Component {
             /** Creates a new state for each option */
             this.setState({[values[i]]: false});
         }
-        this.setState({alternatives: checkboxArr, checked: clickedArr});
+        
+        this.setState({
+            alternatives: alternativesArr
+        });
     }
 
     /* Sets the state with corresponding name to true when checked, false when unchecked*/

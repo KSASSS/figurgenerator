@@ -45,7 +45,7 @@ export default class FilterDropdown extends React.Component {
           </ExpansionPanelSummary>
              
           <ExpansionPanelDetails>
-            <FilterCheckbox updateFilterDropdown={this.filterGotChosen} values={this.props.values}/>
+            <FilterCheckbox updateFilterDropdown={this.filterGotChosen} groupTitle= {this.props.title} values={this.props.values}/>
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </div>
