@@ -27,6 +27,14 @@ export default class ChosenFiltergroup extends React.Component {
         this.addFilterButton(this.props.firstVal);
     }
 
+    getSize() {
+        
+    }
+
+    /** Legger til en filterknapp i gruppen
+     * 
+     * @param {*} filterValue - verdien man skal filtrere på
+     */
     addFilterButton(filterValue) {
         var tmp = this.state.chosenFilters;
 
@@ -34,6 +42,12 @@ export default class ChosenFiltergroup extends React.Component {
         this.setState({chosenFilters: tmp});
     }
 
+    /** Fjerner en filterknapp fra gruppen
+     * 
+     * Hvis gruppen ikke har flere filter kaller den på removeFilterGroup
+     * 
+     * @param {*} buttonName - filterverdien som skal fjernes
+     */
     removeFilterButton(buttonName) {
         var tmp = this.state.chosenFilters;
 

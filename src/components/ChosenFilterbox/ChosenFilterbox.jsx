@@ -15,36 +15,58 @@ export default class ChosenFilterbox extends React.Component {
         super(props);
 
         this.state = {
-            groups: []
+            groups: [],
+            references: {},
         }
 
         this.chosenFilterGroupElement = React.createRef();
         this.removeFilterGroup = this.removeFilterGroup.bind(this);
     }
 
-    hasTitle(name) {
-
+    getRef(id) {
+        return this.state.references[id];
     }
 
+    createRef(id) {
+        var tmpRef = this.state.references;
+        tmpRef[id] = React.createRef();
+        this.setState({references: tmpRef});
+    }
+
+    /** Legger til et filter til boksen 
+     * 
+     * Hvis gruppen filteret tilhører ikke allerede finnes i Valgte Filter, lager den 
+     * gruppen før den legger til filteret.
+     * 
+     * @param {string} groupName - navnet på gruppen til filteret
+     * @param {string} filterName - navnet på filteret som skal legges til i valgte filter
+     * 
+    */
     addFilter(groupName, filterName) {
         var groupsArr = this.state.groups;
 
+        // Sjekker om gruppen allerede eksisterer i groups
         const findTest = groupsArr.find(g => g.key === groupName);
 
         if (findTest === undefined) {
-            groupsArr.push(<ChosenFiltergroup key={groupName} title={groupName} firstVal={filterName} removeFilterGroup={this.removeFilterGroup} ref={this.chosenFilterGroupElement}/>);
+            this.createRef(groupName);
+            groupsArr.push(<ChosenFiltergroup key={groupName} title={groupName} firstVal={filterName} removeFilterGroup={this.removeFilterGroup} ref={this.getRef(groupName)}/>);
             this.setState({groups: groupsArr});
 
         } else {
-            this.chosenFilterGroupElement.current.addFilterButton(filterName);
+            this.state.references[groupName].current.addFilterButton(filterName);
         }
         
     }
 
+    /** Fjerner et filter fra boksen
+     * 
+     * @param {string} groupName - navnet på gruppen til filteret som skal fjernes
+     * @param {string} filterName - navnet på filteret som skal fjernes
+     */
     removeFilter(groupName, filterName) {
-        this.chosenFilterGroupElement.current.removeFilterButton(filterName);
-
-        console.log('gotta remove ' + filterName + ' from ' + groupName);
+        console.log(this.state.references[groupName]);
+        this.state.references[groupName].current.removeFilterButton(filterName);
     }
 
     removeFilterGroup(filterGroupName) {

@@ -9,6 +9,9 @@ export default class ChosenFilterbutton extends React.Component {
         this.onClick = this.onClick.bind(this);
     }
 
+    /** Kaller removeFilterButton metoden i gruppen den tilhører 
+     * 
+     */
     onClick() {
         this.props.removeButton(this.props.title);
     }

@@ -55,10 +55,6 @@ export default class Sidebar extends React.Component {
         } else {
             this.chosenFilterboxElement.current.removeFilter(groupName, filterName);
         }
-
-        
-        //var chosenFilter = [<ChosenFiltergroup key='vfiltergrp' title='Valgte Filter' groups={groupName}/>];
-        //this.setState({chosenFilters: chosenFilter})
     }
 
     filterGotRemoved() {
