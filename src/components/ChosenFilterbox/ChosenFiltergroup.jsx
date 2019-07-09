@@ -17,7 +17,8 @@ export default class ChosenFiltergroup extends React.Component {
         super(props);
 
         this.state = {
-            chosenFilters: []
+            chosenFilters: [],
+            hasFilters: false,
         }
 
         this.removeFilterButton = this.removeFilterButton.bind(this);
@@ -28,7 +29,7 @@ export default class ChosenFiltergroup extends React.Component {
     }
 
     getSize() {
-        
+
     }
 
     /** Legger til en filterknapp i gruppen
@@ -36,9 +37,15 @@ export default class ChosenFiltergroup extends React.Component {
      * @param {*} filterValue - verdien man skal filtrere på
      */
     addFilterButton(filterValue) {
+        console.log('Adding filterbutton ' + filterValue + ' to group ' + this.props.title);
         var tmp = this.state.chosenFilters;
 
-        tmp.push(<ChosenFilterbutton key={filterValue} title={filterValue} removeButton={this.removeFilterButton}/>);
+        tmp.push(
+            <ChosenFilterbutton key={filterValue} 
+                title={filterValue} 
+                removeButton={this.removeFilterButton}
+            />
+        );
         this.setState({chosenFilters: tmp});
     }
 
@@ -49,33 +56,30 @@ export default class ChosenFiltergroup extends React.Component {
      * @param {*} buttonName - filterverdien som skal fjernes
      */
     removeFilterButton(buttonName) {
-        var tmp = this.state.chosenFilters;
+        console.log('Removing filterbutton ' + buttonName + ' from group ' + this.props.title);
+        // Filtrer vekk knappen som skal fjernes
+        var tmp = this.state.chosenFilters.filter(button => button.key !== buttonName);
 
-        var index = tmp.indexOf(tmp.find(fb => fb.key === buttonName));
-
-        if (index !== -1) {
-            tmp.splice(index, 1);
-            this.setState({chosenFilters: tmp});
-        }
-
-        if (this.state.chosenFilters.length === 0)
-            this.props.removeFilterGroup(this.props.title);
-        //console.log(index);
-        //console.log(buttonName + ' please stop pushing me!');
+        this.setState({
+            chosenFilters: tmp
+        }, () => {
+            if (this.state.chosenFilters.length === 0)
+                this.props.unmountFilterGroup(this.props.title);
+        });
     }
 
     render() {
         return(
-            <div className='chosenfiltergroup'>
-                <ExpansionPanel>
+            <div>
+                <ExpansionPanel expanded={true}>
                     <ExpansionPanelSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
                     >
                         <Typography>{this.props.title}</Typography>
                     </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
+                    <ExpansionPanelDetails className='chosenfiltergroup'>
                         <Grid item xs>
                             {this.state.chosenFilters}
                         </Grid>     

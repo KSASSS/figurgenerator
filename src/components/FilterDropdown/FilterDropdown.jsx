@@ -24,17 +24,22 @@ export default class FilterDropdown extends React.Component {
     }
 
     this.filterGotChosen = this.filterGotChosen.bind(this);
+    this.checkBoxList = React.createRef();
   }
 
   filterGotChosen(name, checked) {
-    console.log('filterchosen - fdd');
     this.props.updateSidebar(this.props.title, name, checked);
+  }
+
+  updateCheckbox(name) {
+    console.log('updateCheckbox');
+    this.checkBoxList.current.changeCheckedState(name);
   }
 
   render() {
     return (
       <div className='filterdropdown'>
-        <ExpansionPanel>
+        <ExpansionPanel defaultExpanded={true}>
           <ExpansionPanelSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
@@ -44,7 +49,7 @@ export default class FilterDropdown extends React.Component {
           </ExpansionPanelSummary>
              
           <ExpansionPanelDetails>
-            <FilterCheckbox updateFilterDropdown={this.filterGotChosen} groupTitle= {this.props.title} values={this.props.values}/>
+            <FilterCheckbox updateFilterDropdown={this.filterGotChosen} groupTitle={this.props.title} values={this.props.values} ref={this.checkBoxList}/>
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </div>

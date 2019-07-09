@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 
-import Typography from "@material-ui/core/Typography";
+import './ChosenFilterbox.css'
 
-/* Dropdown imports */
-import ExpansionPanel from "@material-ui/core/ExpansionPanel";
-import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
-import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import Typography from "@material-ui/core/Typography";
 
 import ChosenFiltergroup from './ChosenFiltergroup';
 
@@ -17,10 +13,13 @@ export default class ChosenFilterbox extends React.Component {
         this.state = {
             groups: [],
             references: {},
+            groupHasFilters: {},
         }
 
         this.chosenFilterGroupElement = React.createRef();
         this.removeFilterGroup = this.removeFilterGroup.bind(this);
+        this.updateSidebar = this.updateSidebar.bind(this);
+        this.unmountFilterGroup = this.unmountFilterGroup.bind(this);
     }
 
     getRef(id) {
@@ -43,16 +42,29 @@ export default class ChosenFilterbox extends React.Component {
      * 
     */
     addFilter(groupName, filterName) {
+        console.log('Adding filter ' + filterName + ' to group ' + groupName);
         var groupsArr = this.state.groups;
 
         // Sjekker om gruppen allerede eksisterer i groups
         const findTest = groupsArr.find(g => g.key === groupName);
-
         if (findTest === undefined) {
+            console.log(groupName + ' does not exists, adding the group to ChosenFilterbox');
             this.createRef(groupName);
-            groupsArr.push(<ChosenFiltergroup key={groupName} title={groupName} firstVal={filterName} removeFilterGroup={this.removeFilterGroup} ref={this.getRef(groupName)}/>);
-            this.setState({groups: groupsArr});
+            groupsArr.push(
+                <ChosenFiltergroup key={groupName} 
+                    title={groupName} 
+                    updateSidebar={this.updateSidebar} 
+                    firstVal={filterName} 
+                    unmountFilterGroup={this.unmountFilterGroup} 
+                    ref={this.getRef(groupName)}
+                />
+            );
 
+            var hasFilterObj = this.state.groupHasFilters;
+            hasFilterObj[groupName] = true;
+            
+            this.setState({groups: groupsArr, groupHasFilters: hasFilterObj});
+            
         } else {
             this.state.references[groupName].current.addFilterButton(filterName);
         }
@@ -65,8 +77,10 @@ export default class ChosenFilterbox extends React.Component {
      * @param {string} filterName - navnet på filteret som skal fjernes
      */
     removeFilter(groupName, filterName) {
-        console.log(this.state.references[groupName]);
-        this.state.references[groupName].current.removeFilterButton(filterName);
+        //console.log(this.state.groupHasFilters[groupName]);
+        if (this.state.references[groupName].current.removeFilterButton(filterName))
+            console.log('hei');
+        //this.state.references[groupName].current.removeFilterButton(filterName);
     }
 
     removeFilterGroup(filterGroupName) {
@@ -80,30 +94,41 @@ export default class ChosenFilterbox extends React.Component {
         }
     }
 
+    updateSidebar(filterGroupName, filterName) {
+        this.props.updateSidebar(filterGroupName, filterName);
+    }
+
+    removeGroup(groupName) {
+        this.setState({[groupHasFilters[groupName]]: !this.groupHasFilters[groupName]})
+        return this.state.groups.length;
+    }
+
+    unmountFilterGroup(groupName) {
+        console.log(groupName + ' has no more filters, unmounting it');
+        
+        var tmp = this.state.groups;
+        var index = tmp.indexOf(tmp.find(fg => fg.key === groupName));
+        
+        if (index !== -1) {
+            tmp.splice(index, 1);
+        }
+
+        var tmpObj = this.state.groupHasFilters;
+        tmpObj[groupName] = false;
+
+        this.setState({groupHasFilters: tmpObj, groups: tmp});
+    }
+
     render() {
         return(
-            <div>
+            <div className='chosenfilterbox'>
                 <Typography>{this.props.title}</Typography>
-                {this.state.groups.map((item) =>
-                    item
-                )}
+                <div>
+                    {this.state.groups.map(item => (
+                        this.state.groupHasFilters[item.key] ? item : null
+                    ))}
+                </div>
             </div>
-            /** vfilterboks som dropdown
-            <div class='chosenfilterbox'>
-                <ExpansionPanel>
-                    <ExpansionPanelSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                    >
-                        <Typography>{this.props.title}</Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                        {this.state.groups}
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
-            </div>
-            */
         );
     }
 }

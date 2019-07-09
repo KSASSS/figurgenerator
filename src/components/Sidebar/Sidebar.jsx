@@ -23,42 +23,80 @@ export default class Sidebar extends React.Component {
             indikatorer: [],
             chosenFilters: [],
             filterDropdowns: [],
+            references: [],
+            filterChosen: false,
         }
 
         this.filterGotChosen = this.filterGotChosen.bind(this);
         this.filterGotRemoved = this.filterGotRemoved.bind(this);
 
-        this.chosenFilterboxElement = React.createRef();
+        //this.chosenFilterboxElement = React.createRef();
     }
 
     componentDidMount() {
-        this.setState({chosenFilters: <ChosenFilterbox ref={this.chosenFilterboxElement} key='vfiltergrp' title='Valgte Filter'/>})
+        this.createRef("vfilter");
+        this.setState({chosenFilters: <ChosenFilterbox ref={this.getRef('vfilter')} key='vfiltergrp' title='Valgte Filter' updateSidebar={this.filterGotRemoved}/>})
 
         fetch(`${indikatorURL}`, getMethod)
         .then(response => response.json())
         .then(result => {
             this.setState({indikatorer: result.slice(0, 5)});
             var tmpArr = [];
+            
+            this.createRef("Region");
+            tmpArr.push(<FilterDropdown key='region' ref={this.getRef('Region')} updateSidebar={this.filterGotChosen} title='Region' values={this.state.regions}/>);
 
-            tmpArr.push(<FilterDropdown key='region' updateSidebar={this.filterGotChosen} title='Region' values={this.state.regions}/>);
-            tmpArr.push(<FilterDropdown key='år' updateSidebar={this.filterGotChosen} title='År' values={this.state.år}/>);
-            tmpArr.push(<FilterDropdown key='indikator' updateSidebar={this.filterGotChosen} title='Indikator' values={this.state.indikatorer}/>);
+            this.createRef("År");
+            tmpArr.push(<FilterDropdown key='år' ref={this.getRef('År')} updateSidebar={this.filterGotChosen} title='År' values={this.state.år}/>);
+
+            this.createRef("Indikator");
+            tmpArr.push(<FilterDropdown key='indikator' ref={this.getRef('Indikator')} updateSidebar={this.filterGotChosen} title='Indikator' values={this.state.indikatorer}/>);
 
             this.setState({filterDropdowns: tmpArr})
         })
    
     }
 
+    getRef(id) {
+        return this.state.references[id];
+    }
+
+    createRef(id) {
+        var tmpRef = this.state.references;
+        tmpRef[id] = React.createRef();
+        this.setState({references: tmpRef});
+    }
+
     filterGotChosen(groupName, filterName, checked) {
+        
         if (checked) {
-            this.chosenFilterboxElement.current.addFilter(groupName, filterName);
+            console.log('Filter ' + filterName + ' in group ' + groupName + ' got checked');
+
+            if (!this.state.filterChosen) {
+                this.setState({filterChosen: !this.state.filterChosen},
+                    () => {
+                        this.state.references.vfilter.current.addFilter(groupName, filterName);
+                    }
+                );
+            } else {
+                this.state.references.vfilter.current.addFilter(groupName, filterName);
+            }
+
         } else {
-            this.chosenFilterboxElement.current.removeFilter(groupName, filterName);
+            console.log('Filter ' + filterName + ' in group ' + groupName + ' got unchecked');
+            if(this.state.references.vfilter.current.removeFilter(groupName, filterName))
+                console.log('heu');
+
         }
     }
 
-    filterGotRemoved() {
-        console.log('filterGotRemoved');
+    filterGotRemoved(filterGroupName, filterName) {
+        console.log('filterGotRemoved')
+        this.state.references[filterGroupName].current.updateCheckbox(filterName);
+    }
+
+    resetAllFilters() {
+
     }
 
     render() {
@@ -66,7 +104,7 @@ export default class Sidebar extends React.Component {
         <div className='navbar'>
             
                 <Grid item xs>
-                    {this.state.chosenFilters} 
+                    {this.state.filterChosen ? this.state.chosenFilters : null}
                 </Grid>
                 <Grid item xs>
                     {this.state.filterDropdowns}
