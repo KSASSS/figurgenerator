@@ -108,16 +108,16 @@ export default class Sidebar extends React.Component {
 
     render() {
       return (
-        <div className='navbar'>
-            
-                <Grid item xs>
-                    {this.state.filterChosen ? this.state.chosenFilters : null}
-                </Grid>
-                <Grid item xs>
-                    {this.state.filterDropdowns}
-                </Grid>
-            
-        </div>
+        <Grid className='sidebaritemwrapper' item xs={2}>
+            <Grid container spacing={0} direction='column'>
+            <Grid item xs>
+                {this.state.filterChosen ? this.state.chosenFilters : null}
+            </Grid>
+            <Grid item xs>
+                {this.state.filterDropdowns}
+            </Grid>
+            </Grid>
+        </Grid>
       )
     }
 }

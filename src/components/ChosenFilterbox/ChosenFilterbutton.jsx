@@ -19,10 +19,7 @@ export default class ChosenFilterbutton extends React.Component {
 
     render() {
         return(
-            <div>
-                
-                <Button onClick={this.onClick}><Close className='button' />{this.props.title}</Button>
-            </div>
+            <Button onClick={this.onClick}><Close className='button' />{this.props.title}</Button>
         );
     }
 }
