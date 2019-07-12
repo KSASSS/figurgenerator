@@ -117,6 +117,9 @@ export default class ChosenFilterbox extends React.Component {
         tmpObj[groupName] = false;
 
         this.setState({groupHasFilters: tmpObj, groups: tmp});
+
+        if(tmp.length === 0)
+            this.props.unMountChosenFilterbox();
     }
 
     render() {

@@ -29,13 +29,14 @@ export default class Sidebar extends React.Component {
 
         this.filterGotChosen = this.filterGotChosen.bind(this);
         this.filterGotRemoved = this.filterGotRemoved.bind(this);
+        this.unMountChosenFilterbox = this.unMountChosenFilterbox.bind(this);
 
         //this.chosenFilterboxElement = React.createRef();
     }
 
     componentDidMount() {
         this.createRef("vfilter");
-        this.setState({chosenFilters: <ChosenFilterbox ref={this.getRef('vfilter')} key='vfiltergrp' title='Valgte Filter' updateSidebar={this.filterGotRemoved}/>})
+        this.setState({chosenFilters: <ChosenFilterbox ref={this.getRef('vfilter')} key='vfiltergrp' title='Valgte Filter' unMountChosenFilterbox={this.unMountChosenFilterbox} updateSidebar={this.filterGotRemoved}/>})
 
         fetch(`${indikatorURL}`, getMethod)
         .then(response => response.json())
@@ -82,6 +83,8 @@ export default class Sidebar extends React.Component {
                 this.state.references.vfilter.current.addFilter(groupName, filterName);
             }
 
+            
+
         } else {
             console.log('Filter ' + filterName + ' in group ' + groupName + ' got unchecked');
             if(this.state.references.vfilter.current.removeFilter(groupName, filterName))
@@ -97,6 +100,10 @@ export default class Sidebar extends React.Component {
 
     resetAllFilters() {
 
+    }
+
+    unMountChosenFilterbox() {
+        this.setState({filterChosen: false});
     }
 
     render() {
