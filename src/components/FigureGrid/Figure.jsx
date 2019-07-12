@@ -6,6 +6,9 @@ import Grid from "@material-ui/core/Grid";
 /* Paper import (brukes til å teste grid) */
 import Paper from "@material-ui/core/Paper";
 
+/* Constants */
+import {figureBaseUrl, getMethod} from 'constants'
+
 export default class Figure extends React.Component {
     constructor(props) {
         super(props);
@@ -27,6 +30,7 @@ export default class Figure extends React.Component {
         .then(result => {
             console.log('data');
         })*/
+        this.createUrl();
     }
 
     updateFigure(cities, years, measures) {
@@ -35,6 +39,16 @@ export default class Figure extends React.Component {
 
     unMountFigure() {
         this.setState({hasThreeFilters: !this.state.hasThreeFilters});
+    }
+
+    createUrl() {
+        var test = `${figureBaseUrl}`;
+        var test2 = ['Drammen', 'Oslo'];
+
+        var test3 = '&regioner=' + test2;
+        console.log(test3);
+
+        return test;
     }
 
     transformMeasureNameToUrlName() {

@@ -83,7 +83,7 @@ export default class Sidebar extends React.Component {
                 this.state.references.vfilter.current.addFilter(groupName, filterName);
             }
 
-            
+            this.props.updateActiveFilters(groupName, filterName, checked);
 
         } else {
             console.log('Filter ' + filterName + ' in group ' + groupName + ' got unchecked');
