@@ -2,9 +2,12 @@ import React, {Component} from "react";
 
 /* Constants */
 import {indikatorURL, getMethod} from 'constants'
+import { Plus, Minus } from 'mdi-material-ui'
 
 /* Dropdown imports */
 import FilterDropdown from 'components/FilterDropdown/FilterDropdown.jsx'
+
+import Button from '@material-ui/core/Button';
 
 import ChosenFilterbox from 'components/ChosenFilterbox/ChosenFilterbox'
 
@@ -83,10 +86,11 @@ export default class Sidebar extends React.Component {
                 this.state.references.vfilter.current.addFilter(groupName, filterName);
             }
 
-            this.props.updateActiveFilters(groupName, filterName, checked);
+            this.props.addActiveFilters(groupName, filterName, checked);
 
         } else {
             console.log('Filter ' + filterName + ' in group ' + groupName + ' got unchecked');
+            this.props.removeActiveFilters(groupName, filterName, checked);
             if(this.state.references.vfilter.current.removeFilter(groupName, filterName))
                 console.log('heu');
 
@@ -96,6 +100,7 @@ export default class Sidebar extends React.Component {
     filterGotRemoved(filterGroupName, filterName) {
         console.log('filterGotRemoved')
         this.state.references[filterGroupName].current.updateCheckbox(filterName);
+        this.props.removeActiveFilters(groupName, filterName, checked);
     }
 
     resetAllFilters() {
@@ -110,6 +115,11 @@ export default class Sidebar extends React.Component {
       return (
         <Grid className='sidebaritemwrapper' item xs={2}>
             <Grid container spacing={0} direction='column'>
+            <Grid item xs>
+                        <div>
+                            <Button><Plus className='button' />Legg til figur</Button>
+                        </div>
+                    </Grid>
             <Grid item xs>
                 {this.state.filterChosen ? this.state.chosenFilters : null}
             </Grid>

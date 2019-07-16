@@ -15,6 +15,7 @@ export default class FigureGrid extends React.Component {
 
         this.state = {
             test: [],
+            figureBoxes: [],
         }
     }
 
@@ -33,13 +34,30 @@ export default class FigureGrid extends React.Component {
         this.setState({test: tmp});
     }
 
+    addFigureBox(activeFilters) {
+        console.log('Adding a new figurebox');
+        var tmpFigBox = this.state.figureBoxes;
+
+        tmpFigBox.push(
+            <FigureBox title='Dunno' 
+                cities={activeFilters.Region}
+                years={activeFilters.År}
+                measures={activeFilters.Indikatorer}
+            />
+        )
+
+        this.setState({
+            figureBoxes: tmpFigBox
+        })
+
+        console.log(this.state.figureBoxes);
+    }
+
     render() {
         return(
             <Grid item xs>
                 <Grid container>
-                {this.state.test.map(item => (
-                    item
-                ))}
+                    {this.state.figureBoxes}
                 </Grid>
             </Grid>
         );

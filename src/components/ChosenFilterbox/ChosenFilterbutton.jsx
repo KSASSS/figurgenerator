@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import Button from '@material-ui/core/Button';
-import { Close } from 'mdi-material-ui'
+import { Plus } from 'mdi-material-ui'
 
 export default class ChosenFilterbutton extends React.Component {
     constructor(props) {
@@ -19,7 +19,7 @@ export default class ChosenFilterbutton extends React.Component {
 
     render() {
         return(
-            <Button onClick={this.onClick}><Close className='button' />{this.props.title}</Button>
+            <Button onClick={this.onClick}><Plus className='button' /></Button>
         );
     }
 }
