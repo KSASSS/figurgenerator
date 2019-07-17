@@ -21,8 +21,31 @@ export default class Sidebar extends React.Component {
 
         this.state = {
             menus: [],
-            regions: ['Drammen', 'Fredrikstad', 'Oslo'],
-            år: [2015, 2016, 2017],
+            regions: [
+                'Bergen',
+                'Bærum',
+                'Drammen', 
+                'Fredrikstad',
+                'Kristiansand', 
+                'Oslo',
+                'Sandnes',
+                'Stavanger',
+                'Tromsø',
+                'Trondheim',
+            ],
+            regionCodes: [
+                '1201',
+                '0219',
+                '0602',
+                '0106',
+                '1001',
+                '0301',
+                '1102',
+                '1103',
+                '1902',
+                '5001',
+            ],
+            år: ['2015', '2016', '2017'],
             indikatorer: [],
             chosenFilters: [],
             filterDropdowns: [],
@@ -85,9 +108,15 @@ export default class Sidebar extends React.Component {
             } else {
                 this.state.references.vfilter.current.addFilter(groupName, filterName);
             }
+            
+            if (groupName === 'Region') {
+                var idx = this.state.regions.indexOf(filterName);
 
-            this.props.addActiveFilters(groupName, filterName, checked);
-
+                this.props.addActiveFilters(groupName, this.state.regionCodes[idx], checked);
+            } else {
+                this.props.addActiveFilters(groupName, filterName, checked);
+            }
+            
         } else {
             console.log('Filter ' + filterName + ' in group ' + groupName + ' got unchecked');
             this.props.removeActiveFilters(groupName, filterName, checked);

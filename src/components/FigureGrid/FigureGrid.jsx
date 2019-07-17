@@ -37,12 +37,19 @@ export default class FigureGrid extends React.Component {
     addFigureBox(activeFilters) {
         console.log('Adding a new figurebox');
         var tmpFigBox = this.state.figureBoxes;
+        var title = '';
+
+        if (activeFilters.Region.length === 1) {
+            title = activeFilters.Region[0];
+        } else {
+            title = activeFilters.Indikator[0];
+        }
 
         tmpFigBox.push(
-            <FigureBox title='Dunno' 
-                cities={activeFilters.Region}
+            <FigureBox title={title} 
+                regions={activeFilters.Region}
                 years={activeFilters.År}
-                measures={activeFilters.Indikatorer}
+                measures={activeFilters.Indikator}
             />
         )
 
@@ -50,7 +57,7 @@ export default class FigureGrid extends React.Component {
             figureBoxes: tmpFigBox
         })
 
-        console.log(this.state.figureBoxes);
+        //console.log(this.state.figureBoxes);
     }
 
     render() {
