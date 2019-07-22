@@ -12,6 +12,8 @@ import Sidebar from './components/Sidebar/Sidebar.jsx'
 /* Figurområde imports */
 import FigureGrid from './components/FigureGrid/FigureGrid.jsx'
 
+import { regionInfo } from 'constants'
+
 export default class App extends React.Component {
     constructor(props) {
         super(props);
@@ -25,6 +27,7 @@ export default class App extends React.Component {
         this.figureGridElement = React.createRef();
         this.addActiveFilters = this.addActiveFilters.bind(this);
         this.removeActiveFilters = this.removeActiveFilters.bind(this);
+        this.createFigureBox = this.createFigureBox.bind(this);
     }
 
     addActiveFilters(groupName, filterName, checked) {
@@ -38,11 +41,6 @@ export default class App extends React.Component {
 
             this.setState({
                 activeFilters: actTmp
-            }, () => {
-                if (Object.keys(this.state.activeFilters).length === 3) {
-                    console.log('Three groups selected, adding a figurebox');
-                    this.figureGridElement.current.addFigureBox(this.state.activeFilters);
-                }
             });
         } else {
             var actTmp = this.state.activeFilters;
@@ -54,17 +52,46 @@ export default class App extends React.Component {
         }
     }
 
+    createFigureBox() {
+        if (Object.keys(this.state.activeFilters).length !== 3) {
+            alert('Mangler verdi på en eller flere filtergrupper');
+            return;
+        }
+        console.log('Button got clicked, activefilters are: ');
+        console.log(this.state.activeFilters);
+        this.figureGridElement.current.addFigureBox(this.state.activeFilters);
+    }
+
     /** When a filter gets unchecked, it gets removed here */
     removeActiveFilters(groupName, filterName, checked) {
-        console.log('Removing active filters from App');
+        console.log('Removing active filter ' + filterName + ' from App');
         var filterGroup = this.state.activeFilters[groupName];
+
+        console.log('Before');
+        console.log(filterGroup);
+
+        if (groupName === 'Region') {
+            var regionCode = regionInfo.find(r => r.name === filterName).code;
+            console.log(regionCode + ' rc');
+            filterGroup = filterGroup.filter(filterItem => filterItem !== regionCode);
+            console.log('After');
+            console.log(filterGroup);
+        } else {
+            filterGroup = filterGroup.filter(filterItem => filterItem !== filterName);
+        }
         
-        filterGroup.pop(filterName);
 
         // Was the last filter in the group, removing the group
         if (filterGroup.length === 0) {
             var actTmp = this.state.activeFilters;
             delete actTmp[groupName];
+
+            this.setState({
+                activeFilters: actTmp
+            })
+        } else {
+            var actTmp = this.state.activeFilters;
+            actTmp[groupName] = filterGroup;
 
             this.setState({
                 activeFilters: actTmp
@@ -75,7 +102,7 @@ export default class App extends React.Component {
     render() {
         return(
             <Grid className='mainpage' container spacing={0}>
-                <Sidebar addActiveFilters={this.addActiveFilters} removeActiveFilters={this.removeActiveFilters}/>
+                <Sidebar addActiveFilters={this.addActiveFilters} removeActiveFilters={this.removeActiveFilters} createFigureBox={this.createFigureBox}/>
                 <FigureGrid ref={this.figureGridElement}/>
             </Grid>
         );

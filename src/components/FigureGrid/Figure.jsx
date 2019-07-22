@@ -7,7 +7,7 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 
 /* Constants */
-import {figureBaseUrl, getMethod} from 'constants'
+import { figureBaseUrl, getMethod, regionInfo } from 'constants'
 
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
@@ -17,48 +17,45 @@ export default class Figure extends React.Component {
         super(props);
 
         this.state = {
-            options: {},
-            cities: [],
-            years: [],
-            measures: [],
-            urlMeasures: [],
-            hasThreeFilters: true,
-            values: [],
             figure: [],
         }
     }
 
     componentDidMount() {
-        console.log(this.props);
-        
+        console.log('Fetching data for figure');
         fetch(this.props.url, getMethod)
         .then(result => {
-            console.log(result);
             return result.json();
         })
         .then(data => {
-
-            var years = this.props.regions.map(regionName => {
-                return data[regionName].Years;
-            })
-
-            var data = this.props.regions.map(regionName => {
-                if (data[regionName].Data[this.props.measures] !== undefined)
-                    return data[regionName].Data[this.props.measures][0];
-                else
-                    return [0];
-            })
-
-            /**
-             * const options = {
-                    title: {
-                        text: 'My chart'
-                    },
-                    series: [{
-                        data: [1, 2, 3]
-                    }]
+            //TODO check if 200 or not?
+            console.log('Data was fetched successfully');
+            var dataWithRegionName = this.props.regions.map(regionNumber => {
+                var region = parseInt(regionNumber);
+                return {
+                    name: regionInfo.find(r => r.code === regionNumber).name,
+                    data: (data[region])
                 }
-             */
+            });
+
+            dataWithRegionName.sort(function(a, b){
+                return a.name.localeCompare(b.name)
+            })
+
+            var years = data[parseInt(this.props.regions[0])].Years;
+
+            var dataValues = dataWithRegionName.map(region => {
+                return {
+                    name: region.name,
+                    data: (region.data.Data[this.props.measures] !== null ? region.data.Data[this.props.measures]: 0)
+                }
+            })
+
+            /* Kode brukt for å endre navnene på x aksen til kommunenavn
+            var xAxisData = this.props.regions.map(item => {
+                return regionInfo.find(r => r.code === item).name 
+            });
+            */
             var options = {
                 chart: {
                     type: 'column'
@@ -70,49 +67,15 @@ export default class Figure extends React.Component {
                     }
                 },
                 xAxis: {
-                    categories: this.props.regions
+                    categories: years
                 },
-                series: [{
-                    name: years,
-                    data: data
-                }],
+                series: dataValues,
                 credits: {
                     enabled: false,
                     text: 'ks.no',
                     href: 'https://www.ks.no'
                 },
             }
-            console.log(years);
-            console.log(data);
-            /*var options = {
-                chart: {
-                    type: 'column'
-                },
-                title: {
-                  text: 'Test',
-                  style: {
-                    fontSize: '10px'
-                  }
-                },
-                credits: {
-                  enabled: false,
-                  text: 'ks.no',
-                  href: 'https://www.ks.no'
-                },
-                xAxis: {
-                    categories: years
-                },
-                yAxis: {
-                  title: null,
-                },
-                series: [{
-                    data,
-                }],
-          
-                exporting: {
-                  allowTable: false,
-              }
-            }*/
 
             var figureArr = []
             figureArr.push(<HighchartsReact
@@ -123,7 +86,6 @@ export default class Figure extends React.Component {
                 figure: figureArr
             });
         });
-        this.createUrl();
     }
 
     updateFigure(cities, years, measures) {
@@ -131,31 +93,7 @@ export default class Figure extends React.Component {
     }
 
     unMountFigure() {
-        this.setState({hasThreeFilters: !this.state.hasThreeFilters});
-    }
-
-    createUrl() {
-        /*var newName = measurename.replace(/\ /g, '%20');
-        newName = newName.replace(/æ/g, '%C3%A6')
-        newName = newName.replace(/ø/g, '%C3%B8')
-        newName = newName.replace(/å/g, '%C3%A5')
-
-        var test = `${figureBaseUrl}`;
-        var test2 = ['Drammen', 'Oslo'];
-
-        var test3 = '&regioner=' + test2;
-        console.log(test3);
-
-        return test;*/
-    }
-
-    transformMeasureNameToUrlName() {
-        /*var newName = measurename.replace(/\ /g, '%20');
-        newName = newName.replace(/æ/g, '%C3%A6')
-        newName = newName.replace(/ø/g, '%C3%B8')
-        newName = newName.replace(/å/g, '%C3%A5')
-      
-        this.setState({measureName: newName});*/
+        //TODO?
     }
 
     render() {

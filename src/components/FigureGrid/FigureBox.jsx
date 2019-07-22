@@ -29,9 +29,9 @@ export default class FigureBox extends React.Component {
 
             return newName;
         })
-        var datasets = '?datasett=' + urlMeasures;
-        var years = '&årstall=' + this.props.years;
-        var regions = '&regioner=' + this.props.regions;
+        var datasets = '?datasett=' + urlMeasures.sort();
+        var years = '&årstall=' + this.props.years.sort();
+        var regions = '&regioner=' + this.props.regions.sort();
 
         var url = figureBaseUrl + datasets + regions + years;
 
@@ -51,7 +51,7 @@ export default class FigureBox extends React.Component {
 
     render() {
         return(
-            <Grid item xs={2}>
+            <Grid item xs={4}>
                 {this.state.figure}
             </Grid>
         );

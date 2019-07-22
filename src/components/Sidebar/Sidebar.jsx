@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 
 /* Constants */
-import {indikatorURL, getMethod} from 'constants'
+import { indikatorURL, getMethod, regionInfo, validYears } from 'constants'
 import { Plus, Minus } from 'mdi-material-ui'
 
 /* Dropdown imports */
@@ -45,7 +45,7 @@ export default class Sidebar extends React.Component {
                 '1902',
                 '5001',
             ],
-            år: ['2015', '2016', '2017'],
+            år: ['2015', '2016', '2017', '2018'],
             indikatorer: [],
             chosenFilters: [],
             filterDropdowns: [],
@@ -70,11 +70,15 @@ export default class Sidebar extends React.Component {
             this.setState({indikatorer: result.slice(0, 5)});
             var tmpArr = [];
             
+            var regions = regionInfo.map(item => {
+                return item.name;
+            })
+
             this.createRef("Region");
-            tmpArr.push(<FilterDropdown key='region' ref={this.getRef('Region')} updateSidebar={this.filterGotChosen} title='Region' values={this.state.regions}/>);
+            tmpArr.push(<FilterDropdown key='region' ref={this.getRef('Region')} updateSidebar={this.filterGotChosen} title='Region' values={regions}/>);
 
             this.createRef("År");
-            tmpArr.push(<FilterDropdown key='år' ref={this.getRef('År')} updateSidebar={this.filterGotChosen} title='År' values={this.state.år}/>);
+            tmpArr.push(<FilterDropdown key='år' ref={this.getRef('År')} updateSidebar={this.filterGotChosen} title='År' values={validYears}/>);
 
             this.createRef("Indikator");
             tmpArr.push(<FilterDropdown key='indikator' ref={this.getRef('Indikator')} updateSidebar={this.filterGotChosen} title='Indikator' values={this.state.indikatorer}/>);
@@ -110,9 +114,9 @@ export default class Sidebar extends React.Component {
             }
             
             if (groupName === 'Region') {
-                var idx = this.state.regions.indexOf(filterName);
+                var regionInfoObj = regionInfo.find(r => r.name === filterName);
 
-                this.props.addActiveFilters(groupName, this.state.regionCodes[idx], checked);
+                this.props.addActiveFilters(groupName, regionInfoObj.code, checked);
             } else {
                 this.props.addActiveFilters(groupName, filterName, checked);
             }
@@ -146,7 +150,7 @@ export default class Sidebar extends React.Component {
             <Grid container spacing={0} direction='column'>
             <Grid item xs>
                         <div>
-                            <Button><Plus className='button' />Legg til figur</Button>
+                            <Button onClick={this.props.createFigureBox}><Plus className='button' />Legg til figur</Button>
                         </div>
                     </Grid>
             <Grid item xs>
