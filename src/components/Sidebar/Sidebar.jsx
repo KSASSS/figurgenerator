@@ -20,32 +20,6 @@ export default class Sidebar extends React.Component {
         super(props);
 
         this.state = {
-            menus: [],
-            regions: [
-                'Bergen',
-                'Bærum',
-                'Drammen', 
-                'Fredrikstad',
-                'Kristiansand', 
-                'Oslo',
-                'Sandnes',
-                'Stavanger',
-                'Tromsø',
-                'Trondheim',
-            ],
-            regionCodes: [
-                '1201',
-                '0219',
-                '0602',
-                '0106',
-                '1001',
-                '0301',
-                '1102',
-                '1103',
-                '1902',
-                '5001',
-            ],
-            år: ['2015', '2016', '2017', '2018'],
             indikatorer: [],
             chosenFilters: [],
             filterDropdowns: [],
@@ -106,11 +80,11 @@ export default class Sidebar extends React.Component {
             if (!this.state.filterChosen) {
                 this.setState({filterChosen: !this.state.filterChosen},
                     () => {
-                        this.state.references.vfilter.current.addFilter(groupName, filterName);
+                        //this.state.references.vfilter.current.addFilter(groupName, filterName);
                     }
                 );
             } else {
-                this.state.references.vfilter.current.addFilter(groupName, filterName);
+                //this.state.references.vfilter.current.addFilter(groupName, filterName);
             }
             
             if (groupName === 'Region') {
@@ -146,21 +120,24 @@ export default class Sidebar extends React.Component {
 
     render() {
       return (
-        <Grid className='sidebaritemwrapper' item xs={2}>
-            <Grid container spacing={0} direction='column'>
+        
+            <Grid container item xs={2}  spacing={0} direction='column'>
             <Grid item xs>
                         <div>
                             <Button onClick={this.props.createFigureBox}><Plus className='button' />Legg til figur</Button>
                         </div>
                     </Grid>
             <Grid item xs>
-                {this.state.filterChosen ? this.state.chosenFilters : null}
-            </Grid>
-            <Grid item xs>
                 {this.state.filterDropdowns}
             </Grid>
             </Grid>
-        </Grid>
+        
+
+        /** Old code to show selected filters
+         * <Grid item xs>
+                {this.state.filterChosen ? this.state.chosenFilters : null}
+            </Grid>
+         */
       )
     }
 }

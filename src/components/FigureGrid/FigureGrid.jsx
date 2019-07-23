@@ -16,7 +16,11 @@ export default class FigureGrid extends React.Component {
         this.state = {
             test: [],
             figureBoxes: [],
+            figureBoxTracker: [],
+            figureCounter: 0,
         }
+
+        this.removeFigureBox = this.removeFigureBox.bind(this);
     }
 
     componentDidMount() {
@@ -35,7 +39,7 @@ export default class FigureGrid extends React.Component {
     }
 
     addFigureBox(activeFilters) {
-        console.log('Adding a new figurebox');
+        console.log('Adding a new figurebox with id figure' + this.state.figureCounter);
         var tmpFigBox = this.state.figureBoxes;
         var title = '';
 
@@ -44,29 +48,49 @@ export default class FigureGrid extends React.Component {
         } else {
             title = activeFilters.Indikator[0];
         }
-
-        tmpFigBox.push(
-            <FigureBox title={title} 
+        
+        tmpFigBox.push({
+            id: 'figure' + this.state.figureCounter,
+            figureBox: <FigureBox 
+                key={'figure' + this.state.figureCounter}
+                id={'figure' + this.state.figureCounter}
+                number={this.state.figureCounter}
+                title={title} 
                 regions={activeFilters.Region}
                 years={activeFilters.År}
                 measures={activeFilters.Indikator}
+                removeFigureBox={this.removeFigureBox}
             />
+        }
+            
         )
-
+        
         this.setState({
-            figureBoxes: tmpFigBox
+            figureBoxes: tmpFigBox,
+            figureCounter: this.state.figureCounter + 1
         })
 
         //console.log(this.state.figureBoxes);
     }
 
+    removeFigureBox(id) {
+        console.log('Removing figurebox with id ' + id);
+        var tmpArr = this.state.figureBoxes;
+        tmpArr = tmpArr.filter(item => item.id !== id)
+
+        this.setState({
+            figureBoxes: tmpArr
+        })
+    }
+
     render() {
         return(
-            <Grid item xs>
-                <Grid container>
-                    {this.state.figureBoxes}
-                </Grid>
+            <Grid container item lg spacing={0} direction='row'>
+                {this.state.figureBoxes.map(obj => {
+                    return obj.figureBox
+                })}
             </Grid>
+            
         );
     }
 }

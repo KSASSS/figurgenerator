@@ -101,7 +101,7 @@ export default class App extends React.Component {
 
     render() {
         return(
-            <Grid className='mainpage' container spacing={0}>
+            <Grid className='mainpage' container spacing={0} direction='row'>
                 <Sidebar addActiveFilters={this.addActiveFilters} removeActiveFilters={this.removeActiveFilters} createFigureBox={this.createFigureBox}/>
                 <FigureGrid ref={this.figureGridElement}/>
             </Grid>
