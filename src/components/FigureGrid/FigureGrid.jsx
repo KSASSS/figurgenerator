@@ -6,10 +6,20 @@ import Grid from "@material-ui/core/Grid";
 /* Paper import (brukes til å teste grid) */
 import Paper from "@material-ui/core/Paper";
 
+import Box from '@material-ui/core/Box';
+
 /* FigurBox imports */
 import FigureBox from './FigureBox.jsx'
 
-export default class FigureGrid extends React.Component {
+import { withStyles } from '@material-ui/styles';
+
+const styles = theme => ({
+    root: {
+      display: 'flex',
+    },
+  });
+
+class FigureGrid extends React.Component {
     constructor(props) {
         super(props);
 
@@ -84,13 +94,17 @@ export default class FigureGrid extends React.Component {
     }
 
     render() {
+        const { classes } = this.props;
+
         return(
-            <Grid container item lg spacing={0} direction='row'>
+            <Box display='flex' flexWrap='wrap'>
                 {this.state.figureBoxes.map(obj => {
                     return obj.figureBox
                 })}
-            </Grid>
+            </Box>
             
         );
     }
 }
+
+export default withStyles(styles)(FigureGrid);

@@ -8,6 +8,7 @@ import { Plus, Minus } from 'mdi-material-ui'
 import FilterDropdown from 'components/FilterDropdown/FilterDropdown.jsx'
 
 import Button from '@material-ui/core/Button';
+import Paper from "@material-ui/core/Paper";
 
 import ChosenFilterbox from 'components/ChosenFilterbox/ChosenFilterbox'
 
@@ -120,18 +121,20 @@ export default class Sidebar extends React.Component {
 
     render() {
       return (
-        
-            <Grid container item xs={2}  spacing={0} direction='column'>
-            <Grid item xs>
-                        <div>
-                            <Button onClick={this.props.createFigureBox}><Plus className='button' />Legg til figur</Button>
-                        </div>
-                    </Grid>
-            <Grid item xs>
+          <div>
+            <Paper><Button onClick={this.props.createFigureBox}><Plus className='button' />Legg til figur</Button></Paper>
+            {this.state.filterDropdowns}
+          </div>
+          /*
+        <React.Fragment>
+            <Grid item xs>         
+                <Paper><Button onClick={this.props.createFigureBox}><Plus className='button' />Legg til figur</Button></Paper>
+            </Grid>
+            <Grid item xs={8}>
                 {this.state.filterDropdowns}
             </Grid>
-            </Grid>
-        
+        </React.Fragment>
+        */
 
         /** Old code to show selected filters
          * <Grid item xs>

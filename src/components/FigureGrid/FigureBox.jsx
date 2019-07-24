@@ -10,6 +10,8 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
 import Input from "@material-ui/core/Input";
 
+import Box from '@material-ui/core/Box';
+
 /* Paper import (brukes til å teste grid) */
 import Paper from "@material-ui/core/Paper";
 
@@ -17,11 +19,30 @@ import { Plus, Close } from 'mdi-material-ui'
 
 import Figure from './Figure.jsx'
 
+import { withStyles } from '@material-ui/styles';
+
 
 /* Constants */
 import {figureBaseUrl, getMethod} from 'constants'
 
-export default class FigureBox extends React.Component {
+const styles = theme => ({
+    root: {
+        display: 'flex',
+        padding: '0px 10px 10px 0px',
+    },
+    paper: {
+        
+    },
+    removeButton: {
+        color: 'red',
+        width: '50%',
+    },
+    titleButton: {
+        width: '50%',
+    }
+  });
+
+class FigureBox extends React.Component {
     constructor(props) {
         super(props);
 
@@ -57,7 +78,7 @@ export default class FigureBox extends React.Component {
         ]
         this.setState({
             figure: figureArr,
-            labelWidth: this.inputLabel.current.offsetWidth,
+            //labelWidth: this.inputLabel.current.offsetWidth,
             url: url,
             figureType: 1
         })
@@ -102,33 +123,32 @@ export default class FigureBox extends React.Component {
 
     render() {
         const { figureType } = this.state;
+        const { classes } = this.props;
         return(
-                <Grid container item xs={6}  spacing={0} direction='column'>
-                    <Grid item xs>
-                        {this.state.figure}
-                    </Grid>
-                    <Grid item xs container spacing={0} direction='row' alignItems='center'>
-                            <Grid item xs>
-                                <InputLabel ref={this.inputLabel} htmlFor="outlined-age-simple">
-                                    Figurtype
-                                </InputLabel>
-                                <Select
-                                    name='figuretype'
-                                    value={figureType}
-                                    onChange={event => this.changeFigureType(event.target.value)}
-                                >
-                                    <MenuItem key='wtf1' value={1}>Column</MenuItem>
-                                    <MenuItem key='wtf2' value={2}>Line</MenuItem>
-                                    <MenuItem key='wtf3' value={3}>Bar</MenuItem>
-                                    <MenuItem key='wtf4' value={4}>Pie</MenuItem>
-                                </Select>
-                            </Grid>
-                            <Grid item xs>
-                                <Button onClick={this.removeFigureBox}>Fjern figur<Close /></Button>
-                            </Grid>
-                        
-                    </Grid>
-                </Grid>
+            <div className={classes.root}>
+                <Paper className={classes.paper}>
+                       
+                    <InputLabel ref={this.inputLabel} htmlFor="outlined-age-simple">
+                        Figurtype
+                    </InputLabel>
+                    <Select
+                        name='figuretype'
+                        value={figureType}
+                        onChange={event => this.changeFigureType(event.target.value)}
+                        fullWidth={true}
+                    >
+                        <MenuItem key='wtf1' value={1}>Column</MenuItem>
+                        <MenuItem key='wtf2' value={2}>Line</MenuItem>
+                        <MenuItem key='wtf3' value={3}>Bar</MenuItem>
+                        <MenuItem key='wtf4' value={4}>Pie</MenuItem>
+                    </Select>
+                    {this.state.figure}
+                    <Button className={classes.titleButton}>Endre tittel</Button>
+                    <Button className={classes.removeButton} onClick={this.removeFigureBox}>Fjern figur<Close /></Button>
+                </Paper>
+            </div>
         );
     }
 }
+
+export default withStyles(styles)(FigureBox);

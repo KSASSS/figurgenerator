@@ -75,6 +75,7 @@ export default class Figure extends React.Component {
             var options = {
                 chart: {
                     type: this.props.figureType,
+                    width: 500
                 },
                 title: {
                     text: this.props.measures,
@@ -92,7 +93,7 @@ export default class Figure extends React.Component {
                 },
                 series: dataValues,
                 credits: {
-                    enabled: false,
+                    enabled: true,
                     text: 'ks.no',
                     href: 'https://www.ks.no'
                 },
@@ -134,7 +135,7 @@ export default class Figure extends React.Component {
                 },
                 series: this.state.data,
                 credits: {
-                    enabled: false,
+                    enabled: true,
                     text: 'ks.no',
                     href: 'https://www.ks.no'
                 },

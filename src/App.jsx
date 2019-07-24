@@ -5,6 +5,11 @@ import Grid from "@material-ui/core/Grid";
 
 /* Paper import (brukes til å teste grid) */
 import Paper from "@material-ui/core/Paper";
+import Drawer from '@material-ui/core/Drawer';
+
+import PropTypes from 'prop-types';
+
+import { withStyles } from '@material-ui/styles';
 
 /* Sidebar imports */
 import Sidebar from './components/Sidebar/Sidebar.jsx'
@@ -14,7 +19,31 @@ import FigureGrid from './components/FigureGrid/FigureGrid.jsx'
 
 import { regionInfo } from 'constants'
 
-export default class App extends React.Component {
+const drawerWidth = 240;
+
+const styles = theme => ({
+    root: {
+      display: 'flex',
+    },
+    appBar: {
+      width: `calc(100% - ${drawerWidth}px)`,
+      marginLeft: drawerWidth,
+    },
+    drawer: {
+      width: drawerWidth,
+      flexShrink: 0,
+    },
+    drawerPaper: {
+      width: drawerWidth,
+    },
+    content: {
+      flexGrow: 1,
+      //backgroundColor: theme.palette.background.default,
+      //padding: theme.spacing(3),
+    },
+  });
+
+class App extends React.Component {
     constructor(props) {
         super(props);
 
@@ -100,11 +129,43 @@ export default class App extends React.Component {
     }
 
     render() {
+        console.log('wut')
+        const { classes } = this.props;
+        console.log(classes);
         return(
-            <Grid className='mainpage' container spacing={0} direction='row'>
+            <div className={classes.root}>
+            <Drawer
+                className={classes.drawer}
+                variant="permanent"
+                classes={{
+                    paper: classes.drawerPaper,
+                }}
+                anchor="left"
+            >
                 <Sidebar addActiveFilters={this.addActiveFilters} removeActiveFilters={this.removeActiveFilters} createFigureBox={this.createFigureBox}/>
+            </Drawer>
+            <main className={classes.content}>
                 <FigureGrid ref={this.figureGridElement}/>
-            </Grid>
+            </main>
+            
+            </div>
         );
+        /**<Sidebar addActiveFilters={this.addActiveFilters} removeActiveFilters={this.removeActiveFilters} createFigureBox={this.createFigureBox}/> */
+        /*return(
+            <Grid className='mainpage' container spacing={2} direction='row'>
+                <Grid container item xs={2} direction='column'>
+                    <Sidebar addActiveFilters={this.addActiveFilters} removeActiveFilters={this.removeActiveFilters} createFigureBox={this.createFigureBox}/>
+                </Grid>
+                <Grid container item xs direction='row'>
+                    <FigureGrid ref={this.figureGridElement}/>
+                </Grid>
+            </Grid>
+        );*/
     }
 }
+
+App.propTypes = {
+    classes: PropTypes.object.isRequired,
+  };
+
+export default withStyles(styles)(App)
