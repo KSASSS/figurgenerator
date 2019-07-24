@@ -52,19 +52,23 @@ export default class Figure extends React.Component {
             var years = data[parseInt(this.props.regions[0])].Years;
 
             var dataValues = dataWithRegionName.map(region => {
+                console.log('fail');
                 return {
                     name: region.name,
                     data: (region.data.Data[this.props.measures] !== null ? region.data.Data[this.props.measures]: 0)
                 }
             })
-
+            console.log('not fail?');
+            
             var pieDataValues = dataWithRegionName.map(region => {
+                console.log(region.data);
+                console.log(region.data.Data[this.props.measures[0]]);
                 return {
                     name: region.name,
                     y: (region.data.Data[this.props.measures][0] !== null ? region.data.Data[this.props.measures][0]: 0)
                 }
             })
-
+            console.log('prob fail');
             /* Kode brukt for å endre navnene på x aksen til kommunenavn
             Trenger litt rework da år også må flyttes litt på.
 
@@ -88,7 +92,8 @@ export default class Figure extends React.Component {
                 },
                 yAxis: {
                     title: {
-                        text: 'Verdi'
+                        text: '',
+                        //text: 'Verdi'
                     }
                 },
                 series: dataValues,
@@ -155,6 +160,10 @@ export default class Figure extends React.Component {
                         fontSize: '10px'
                     }
                 },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                },
+
                 yAxis: {
                     title: {
                         text: ''
@@ -168,7 +177,11 @@ export default class Figure extends React.Component {
                         allowPointSelect: true,
                         cursor: 'pointer',
                         dataLabels: {
-                            enabled: false
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                            style: {
+                              color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                            }
                         },
                         showInLegend: true
                     }

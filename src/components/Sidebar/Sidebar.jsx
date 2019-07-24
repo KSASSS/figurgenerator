@@ -122,7 +122,7 @@ export default class Sidebar extends React.Component {
     render() {
       return (
           <div>
-            <Paper><Button onClick={this.props.createFigureBox}><Plus className='button' />Legg til figur</Button></Paper>
+            <Paper><Button onClick={this.props.createFigureBox}><Plus className='button' />Generer figur</Button></Paper>
             {this.state.filterDropdowns}
           </div>
           /*
