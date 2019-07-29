@@ -124,14 +124,9 @@ export default class ChosenFilterbox extends React.Component {
 
     render() {
         return(
-            <div className='chosenfilterbox'>
-                <Typography>{this.props.title}</Typography>
-                <div>
-                    {this.state.groups.map(item => (
-                        this.state.groupHasFilters[item.key] ? item : null
-                    ))}
-                </div>
-            </div>
+            this.state.groups.map(item => (
+                this.state.groupHasFilters[item.key] ? item : null
+            ))
         );
     }
 }

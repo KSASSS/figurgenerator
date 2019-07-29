@@ -10,7 +10,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 /* Brukes som tittel på dropdownsmenyene */
 import Typography from "@material-ui/core/Typography";
 
-import FilterCheckbox from 'components/FilterDropdown/FilterCheckbox.jsx';
+import FilterCheckboxGroup from 'components/FilterDropdown/FilterCheckboxGroup.jsx';
 
 
 
@@ -21,10 +21,22 @@ export default class FilterDropdown extends React.Component {
 
     this.state = {
       values: [],
+      checkboxList: [],
     }
 
     this.filterGotChosen = this.filterGotChosen.bind(this);
+    this.searchForFilter = this.searchForFilter.bind(this);
     this.checkBoxList = React.createRef();
+  }
+
+  componentDidMount() {
+    var tmpArr = [
+      <FilterCheckboxGroup updateFilterDropdown={this.filterGotChosen} groupTitle={this.props.title} values={this.props.values} ref={this.checkBoxList}/>
+    ]
+
+    this.setState({
+      checkboxList: tmpArr
+    })
   }
 
   filterGotChosen(name, checked) {
@@ -34,6 +46,11 @@ export default class FilterDropdown extends React.Component {
   updateCheckbox(name) {
     console.log('updateCheckbox');
     this.checkBoxList.current.changeCheckedState(name);
+  }
+
+  searchForFilter(input) {
+    console.log('searchForFilter');
+    this.checkBoxList.current.updateAlternatives(input);
   }
 
   render() {
@@ -49,7 +66,7 @@ export default class FilterDropdown extends React.Component {
           </ExpansionPanelSummary>
              
           <ExpansionPanelDetails>
-            <FilterCheckbox updateFilterDropdown={this.filterGotChosen} groupTitle={this.props.title} values={this.props.values} ref={this.checkBoxList}/>
+            {this.state.checkboxList}
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </div>

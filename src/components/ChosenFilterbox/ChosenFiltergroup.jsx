@@ -70,7 +70,7 @@ export default class ChosenFiltergroup extends React.Component {
 
     render() {
         return(
-            <div>
+            
                 <ExpansionPanel expanded={true}>
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
@@ -85,7 +85,7 @@ export default class ChosenFiltergroup extends React.Component {
                         </Grid>     
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
-            </div>
+            
         );
     }
 }
