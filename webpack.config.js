@@ -2,21 +2,28 @@ var path = require('path');
 var HtmlWebpackPlugin =  require('html-webpack-plugin');
 
 module.exports = {
-    entry : './app/index.js',
+    entry : './src/index.js',
     output : {
-        path : path.resolve(__dirname , 'dist'),
+        path : path.resolve(__dirname , 'build'),
         filename: 'index_bundle.js'
     },
     module : {
         rules : [
-            {test : /\.(js)$/, use:'babel-loader'},
+            {test : /\.(js|jsx)$/, use:'babel-loader'},
             {test : /\.css$/, use:['style-loader', 'css-loader']}
         ]
+    },
+    resolve: {
+        extensions: ['*', '.js', '.jsx'],
+        alias: {
+            components: path.resolve(__dirname, './src/components'),
+            constants: path.resolve(__dirname, './src/constants.jsx')
+        }
     },
     mode:'development',
     plugins : [
         new HtmlWebpackPlugin ({
-            template : 'app/index.html'
+            template : 'src/index.html'
         })
     ]
 
