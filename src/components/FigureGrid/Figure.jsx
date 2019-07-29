@@ -84,7 +84,7 @@ export default class Figure extends React.Component {
                 title: {
                     text: this.props.measures,
                     style: {
-                        fontSize: '10px'
+                        fontSize: '15px'
                     }
                 },
                 xAxis: {
@@ -132,7 +132,7 @@ export default class Figure extends React.Component {
                 title: {
                     text: this.props.measures,
                     style: {
-                        fontSize: '10px'
+                        fontSize: '15px'
                     }
                 },
                 xAxis: {
@@ -157,7 +157,7 @@ export default class Figure extends React.Component {
                 title: {
                     text: this.props.measures,
                     style: {
-                        fontSize: '10px'
+                        fontSize: '15px'
                     }
                 },
                 tooltip: {

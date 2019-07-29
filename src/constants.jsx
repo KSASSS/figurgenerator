@@ -51,3 +51,5 @@ export const validYears = [
     '2018',
     '2019'
 ]
+
+export const drawerWidth = 240;

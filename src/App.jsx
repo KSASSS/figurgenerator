@@ -9,6 +9,8 @@ import Drawer from '@material-ui/core/Drawer';
 
 import PropTypes from 'prop-types';
 
+import Box from '@material-ui/core/Box';
+
 import { withStyles } from '@material-ui/styles';
 
 /* Sidebar imports */
@@ -17,24 +19,13 @@ import Sidebar from './components/Sidebar/Sidebar.jsx'
 /* Figurområde imports */
 import FigureGrid from './components/FigureGrid/FigureGrid.jsx'
 
-import { regionInfo } from 'constants'
+import { regionInfo, drawerWidth } from 'constants'
 
-const drawerWidth = 240;
+//const drawerWidth = 240;
 
 const styles = theme => ({
     root: {
       display: 'flex',
-    },
-    appBar: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
-    },
-    drawer: {
-      width: drawerWidth,
-      flexShrink: 0,
-    },
-    drawerPaper: {
-      width: drawerWidth,
     },
     content: {
       flexGrow: 1,
@@ -97,6 +88,7 @@ class App extends React.Component {
         var filterGroup = this.state.activeFilters[groupName];
 
         console.log('Before');
+        console.log(this.state.activeFilters)
         console.log(filterGroup);
 
         if (groupName === 'Region') {
@@ -133,22 +125,21 @@ class App extends React.Component {
         const { classes } = this.props;
         console.log(classes);
         return(
-            <div className={classes.root}>
-            <Drawer
-                className={classes.drawer}
-                variant="permanent"
-                classes={{
-                    paper: classes.drawerPaper,
-                }}
-                anchor="left"
-            >
+            <div>
+            <Box className={classes.root} m={0}>
                 <Sidebar addActiveFilters={this.addActiveFilters} removeActiveFilters={this.removeActiveFilters} createFigureBox={this.createFigureBox}/>
-            </Drawer>
+                <FigureGrid className={classes.content} ref={this.figureGridElement}/>
+            </Box>
+            </div>
+            /*
+            <div className={classes.root}>
+                <Sidebar addActiveFilters={this.addActiveFilters} removeActiveFilters={this.removeActiveFilters} createFigureBox={this.createFigureBox}/>
             <main className={classes.content}>
                 <FigureGrid ref={this.figureGridElement}/>
             </main>
             
             </div>
+            */
         );
         /**<Sidebar addActiveFilters={this.addActiveFilters} removeActiveFilters={this.removeActiveFilters} createFigureBox={this.createFigureBox}/> */
         /*return(

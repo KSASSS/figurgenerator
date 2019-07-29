@@ -143,7 +143,7 @@ class FigureBox extends React.Component {
                         <MenuItem key='wtf4' value={4}>Pie</MenuItem>
                     </Select>
                     {this.state.figure}
-                    <Button className={classes.titleButton}>Endre tittel</Button>
+                    <Button className={classes.titleButton} disabled>Endre tittel</Button>
                     <Button className={classes.removeButton} onClick={this.removeFigureBox}>Fjern figur<Close /></Button>
                 </Paper>
             </div>
