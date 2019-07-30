@@ -13,6 +13,13 @@ export default class FilterCheckbox extends React.Component {
         }
 
         this.handleChange = this.handleChange.bind(this);
+        this.isChecked = this.isChecked.bind(this);
+    }
+
+    componentDidMount() {
+        this.setState({
+            checked: this.props.defaultCheckValue
+        });
     }
 
     setChecked(checked) {
@@ -32,6 +39,10 @@ export default class FilterCheckbox extends React.Component {
         } else {
             this.props.checkboxGotUpdated(this.props.value, event.target.checked);
         }
+    }
+
+    isChecked() {
+        return this.state.checked;
     }
 
     render() {
