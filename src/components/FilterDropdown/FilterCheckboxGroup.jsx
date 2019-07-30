@@ -54,7 +54,8 @@ class FilterCheckboxGroup extends React.Component {
     componentDidMount() {
         const values = this.props.values;
         var alternativesArr = [
-            <FilterCheckbox 
+            <FilterCheckbox
+                key={this.props.groupTitle + 'Alle'}
                 value={'Alle'} 
                 defaultCheckValue={false} 
                 checkAll={this.checkAll} 
@@ -66,6 +67,7 @@ class FilterCheckboxGroup extends React.Component {
         values.map(item => {
             alternativesArr.push(
                 <FilterCheckbox 
+                    key={this.props.groupTitle + item}
                     value={item} 
                     defaultCheckValue={false} 
                     checkboxGotUpdated={this.checkboxGotUpdated} 

@@ -31,7 +31,7 @@ export default class FilterDropdown extends React.Component {
 
   componentDidMount() {
     var tmpArr = [
-      <FilterCheckboxGroup updateFilterDropdown={this.filterGotChosen} groupTitle={this.props.title} values={this.props.values} ref={this.checkBoxList}/>
+      <FilterCheckboxGroup key={this.props.title} updateFilterDropdown={this.filterGotChosen} groupTitle={this.props.title} values={this.props.values} ref={this.checkBoxList}/>
     ]
 
     this.setState({

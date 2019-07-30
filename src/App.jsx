@@ -121,9 +121,8 @@ class App extends React.Component {
     }
 
     render() {
-        console.log('wut')
         const { classes } = this.props;
-        console.log(classes);
+        
         return(
             <div>
             <Box className={classes.root} m={0}>
@@ -131,27 +130,7 @@ class App extends React.Component {
                 <FigureGrid className={classes.content} ref={this.figureGridElement}/>
             </Box>
             </div>
-            /*
-            <div className={classes.root}>
-                <Sidebar addActiveFilters={this.addActiveFilters} removeActiveFilters={this.removeActiveFilters} createFigureBox={this.createFigureBox}/>
-            <main className={classes.content}>
-                <FigureGrid ref={this.figureGridElement}/>
-            </main>
-            
-            </div>
-            */
         );
-        /**<Sidebar addActiveFilters={this.addActiveFilters} removeActiveFilters={this.removeActiveFilters} createFigureBox={this.createFigureBox}/> */
-        /*return(
-            <Grid className='mainpage' container spacing={2} direction='row'>
-                <Grid container item xs={2} direction='column'>
-                    <Sidebar addActiveFilters={this.addActiveFilters} removeActiveFilters={this.removeActiveFilters} createFigureBox={this.createFigureBox}/>
-                </Grid>
-                <Grid container item xs direction='row'>
-                    <FigureGrid ref={this.figureGridElement}/>
-                </Grid>
-            </Grid>
-        );*/
     }
 }
 
