@@ -15,19 +15,13 @@ import { withStyles } from '@material-ui/styles';
 
 const styles = theme => ({
     root: {
-      display: 'flex',
+        display: 'flex',
+        flexWrap: 'wrap',
+        width: 200
     },
     checkbox: {
-        visibility: 'visible',
-        color: 'blue',
+        fontSize: 8, 
     },
-    hiddenCheckbox: {
-        visibility: 'hidden',
-        color: 'blue',
-    },
-    findMe: {
-
-    }
   });
 
 class FilterCheckboxGroup extends React.Component {
@@ -52,9 +46,10 @@ class FilterCheckboxGroup extends React.Component {
 
     /* On mount create the checkbox alternatives */
     componentDidMount() {
-        const values = this.props.values;
+        const { classes, values } = this.props;
         var alternativesArr = [
             <FilterCheckbox
+                className={classes.allCheckbox}
                 key={this.props.groupTitle + 'Alle'}
                 value={'Alle'} 
                 defaultCheckValue={false} 
@@ -66,7 +61,7 @@ class FilterCheckboxGroup extends React.Component {
         
         values.map(item => {
             alternativesArr.push(
-                <FilterCheckbox 
+                <FilterCheckbox
                     key={this.props.groupTitle + item}
                     value={item} 
                     defaultCheckValue={false} 
@@ -171,8 +166,9 @@ class FilterCheckboxGroup extends React.Component {
 
     render() {
         const { alternatives, filtered, filteredAlternatives } = this.state;
+        const { classes } = this.props;
         return (
-            <FormGroup row={true}>
+            <FormGroup className={classes.root} row={true}>
                 {filtered ? filteredAlternatives : alternatives}
             </FormGroup>
         )

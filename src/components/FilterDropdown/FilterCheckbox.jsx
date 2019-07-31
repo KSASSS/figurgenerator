@@ -2,8 +2,20 @@ import React, {Component} from "react";
 
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Typography from "@material-ui/core/Typography";
 
-export default class FilterCheckbox extends React.Component {
+import { withStyles } from '@material-ui/styles';
+
+const styles = theme => ({
+    checkbox: {
+        fontSize: 12,
+    },
+    allCheckbox: {
+        width: '100%',
+    },
+});
+
+class FilterCheckbox extends React.Component {
 
     constructor(props) {
         super(props);
@@ -17,13 +29,14 @@ export default class FilterCheckbox extends React.Component {
     }
 
     componentDidMount() {
+        const { defaultCheckValue, value } = this.props;
         this.setState({
-            checked: this.props.defaultCheckValue
+            checked: defaultCheckValue
         });
     }
 
     setChecked(checked) {
-        console.log('Setting ' + this.props.value + ' checked as ' + checked);
+        //console.log('Setting ' + this.props.value + ' checked as ' + checked);
         this.setState({
             checked: checked
         });
@@ -46,12 +59,17 @@ export default class FilterCheckbox extends React.Component {
     }
 
     render() {
+        const { classes, value } = this.props;
         return (
-            <FormControlLabel
-                label={this.props.value}
+            <FormControlLabel className={value === 'Alle' ? classes.allCheckbox: classes.checkbox}
+                label={
+                    <Typography className={classes.checkbox}>
+                        {value}
+                    </Typography>
+                }
                 control= {
                     <Checkbox
-                        value={this.props.value}
+                        value={value}
                         onChange={this.handleChange}
                         checked={this.state.checked}
                     />
@@ -59,5 +77,6 @@ export default class FilterCheckbox extends React.Component {
             />
         )
     }
-
 }
+
+export default withStyles(styles)(FilterCheckbox)

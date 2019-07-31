@@ -23,12 +23,19 @@ export default class Figure extends React.Component {
             data: [],
             pieData: [],
             years: [],
+            title: '',
+            options: {},
         }
     }
 
     componentDidMount() {
         console.log('Fetching data for figure');
         HC_exporting(Highcharts);
+        Highcharts.setOptions({
+            lang: {
+                numericSymbols: null //otherwise by default ['k', 'M', 'G', 'T', 'P', 'E']
+            },
+        })
         
         fetch(this.props.url, getMethod)
         .then(result => {
@@ -73,19 +80,67 @@ export default class Figure extends React.Component {
                 return regionInfo.find(r => r.code === item).name 
             });
             */
-            var options = {
+
+            var options = this.createOptions(this.props.figureType, this.props.measures, years, dataValues);
+
+            var figureArr = [];
+            figureArr.push(
+                <HighchartsReact
+                    highcharts={Highcharts}
+                    options={options}
+                />
+            );
+
+            this.setState({
+                figure: figureArr,
+                data: dataValues,
+                years: years,
+                pieData: pieDataValues,
+                options: options,
+                type: this.props.figureType,
+                title: this.props.measures
+            });
+        });
+    }
+
+    changeFigureType(figureType) {
+        const { title, data, years } = this.state;
+        var options = this.createOptions(figureType, title, years, data);
+        
+        var figureArr = []
+        figureArr.push(
+            <HighchartsReact
+                highcharts={Highcharts}
+                options={options}
+            />
+        );
+        this.setState({
+            figure: figureArr,
+            type: figureType,
+        });
+    }
+
+    unMountFigure() {
+        //TODO?
+    }
+
+    createOptions(type, title, groups, dataValues) {
+        var options = {};
+
+        if (type !== 'pie') {
+            options = {
                 chart: {
-                    type: this.props.figureType,
-                    width: 500
+                    type: type,
+                    width: 500,
                 },
                 title: {
-                    text: this.props.measures,
+                    text: title,
                     style: {
                         fontSize: '15px'
                     }
                 },
                 xAxis: {
-                    categories: years
+                    categories: groups
                 },
                 yAxis: {
                     title: {
@@ -102,48 +157,8 @@ export default class Figure extends React.Component {
                 exporting: { 
                     allowTable: false 
                 },
-            }
-
-            var figureArr = []
-            figureArr.push(<HighchartsReact
-                highcharts={Highcharts}
-                options={options}
-                />)
-            this.setState({
-                figure: figureArr,
-                data: dataValues,
-                years: years,
-                pieData: pieDataValues
-            });
-        });
-    }
-
-    changeFigureType(figureType) {
-        var options = {};
-        if (figureType !== 'pie') {
-            console.log(this.state.data);
-            options = {
-                chart: {
-                    type: figureType
-                },
-                title: {
-                    text: this.props.measures,
-                    style: {
-                        fontSize: '15px'
-                    }
-                },
-                xAxis: {
-                    categories: this.state.years
-                },
-                series: this.state.data,
-                credits: {
-                    enabled: true,
-                    text: 'ks.no',
-                    href: 'https://www.ks.no'
-                },
-            }
+            };
         } else {
-            console.log(this.state.pieData);
             options = {
                 chart: {
                     plotBackgroundColor: null,
@@ -152,7 +167,7 @@ export default class Figure extends React.Component {
                     type: 'pie'
                 },
                 title: {
-                    text: this.props.measures,
+                    text: title,
                     style: {
                         fontSize: '15px'
                     }
@@ -187,9 +202,17 @@ export default class Figure extends React.Component {
                     name: 'Regioner',
                     colorByPoint: true,
                     data: this.state.pieData
-                }]
-            }
+                }],
+            };
         }
+        
+
+        return options;
+    }
+
+    changeTitle(newTitle) {
+        const { type, years, data} = this.state;
+        var options = this.createOptions(type, newTitle, years, data);
 
         var figureArr = []
         figureArr.push(
@@ -199,13 +222,26 @@ export default class Figure extends React.Component {
             />
         );
         this.setState({
-            figure: figureArr
+            figure: figureArr,
+            options: options
         });
-        //change the figure to another type (chart, side, etc)
     }
 
-    unMountFigure() {
-        //TODO?
+    swapGrouping() {
+        const { data, years } = this.state;
+
+        var testData = [];
+        var testGroup = [];
+        
+        var test = data.map(item => {
+            testGroup.push(item.name);
+            item.data.map((dataValue, idx) => {
+                testData.push({
+                    name: years[idx],
+                    data: 
+                })
+            })
+        });
     }
 
     render() {

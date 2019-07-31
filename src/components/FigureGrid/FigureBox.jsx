@@ -15,7 +15,7 @@ import Box from '@material-ui/core/Box';
 /* Paper import (brukes til å teste grid) */
 import Paper from "@material-ui/core/Paper";
 
-import { Plus, Close } from 'mdi-material-ui'
+import { Autorenew, Close } from 'mdi-material-ui'
 
 import Figure from './Figure.jsx'
 
@@ -35,10 +35,13 @@ const styles = theme => ({
     },
     removeButton: {
         color: 'red',
-        width: '50%',
+        width: '33%',
     },
     titleButton: {
-        width: '50%',
+        width: '33%',
+    },
+    swapButton: {
+        width: '33%',
     }
   });
 
@@ -56,6 +59,8 @@ class FigureBox extends React.Component {
         this.changeFigureType = this.changeFigureType.bind(this);
         this.figureElement = React.createRef();
         this.removeFigureBox = this.removeFigureBox.bind(this);
+        this.changeFigureTitle = this.changeFigureTitle.bind(this);
+        this.changeFigureGrouping = this.changeFigureGrouping.bind(this);
     }
 
     componentDidMount() {
@@ -121,6 +126,14 @@ class FigureBox extends React.Component {
         this.props.removeFigureBox(this.props.id);
     }
 
+    changeFigureTitle(event) {
+        this.figureElement.current.changeTitle('test');
+    }
+
+    changeFigureGrouping(event) {
+        this.figureElement.current.swapGrouping();
+    }
+
     render() {
         const { figureType } = this.state;
         const { classes } = this.props;
@@ -143,7 +156,8 @@ class FigureBox extends React.Component {
                         <MenuItem key='wtf4' value={4}>Pie</MenuItem>
                     </Select>
                     {this.state.figure}
-                    <Button className={classes.titleButton} disabled>Endre tittel</Button>
+                    <Button className={classes.titleButton} onClick={this.changeFigureTitle} disabled>Endre tittel</Button>
+                    <Button className={classes.swapButton} onClick={this.changeFigureGrouping}><Autorenew/></Button>
                     <Button className={classes.removeButton} onClick={this.removeFigureBox}>Fjern figur<Close /></Button>
                 </Paper>
             </div>

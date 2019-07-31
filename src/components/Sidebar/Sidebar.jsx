@@ -50,7 +50,7 @@ const styles = theme => ({
         top: 42,
         position: 'fixed',
     }
-  });
+});
 class Sidebar extends React.Component {
     
     constructor(props) {
@@ -79,7 +79,10 @@ class Sidebar extends React.Component {
         fetch(`${indikatorURL}`, getMethod)
         .then(response => response.json())
         .then(result => {
-            this.setState({indikatorer: result.slice(0, 5)});
+            this.setState({
+                indikatorer: result.sort()
+            });
+            
             var tmpArr = [];
             
             var regions = regionInfo.map(item => {
