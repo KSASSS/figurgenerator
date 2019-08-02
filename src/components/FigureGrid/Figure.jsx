@@ -25,6 +25,7 @@ export default class Figure extends React.Component {
             years: [],
             title: '',
             options: {},
+            swapped: false,
         }
     }
 
@@ -105,8 +106,11 @@ export default class Figure extends React.Component {
 
     changeFigureType(figureType) {
         const { title, data, years } = this.state;
+
+        console.log('Changing from ' + this.state.type + ' to ' + figureType);
+
         var options = this.createOptions(figureType, title, years, data);
-        
+
         var figureArr = []
         figureArr.push(
             <HighchartsReact
@@ -117,6 +121,7 @@ export default class Figure extends React.Component {
         this.setState({
             figure: figureArr,
             type: figureType,
+            swapped: false,
         });
     }
 
@@ -126,7 +131,6 @@ export default class Figure extends React.Component {
 
     createOptions(type, title, groups, dataValues) {
         var options = {};
-
         if (type !== 'pie') {
             options = {
                 chart: {
@@ -227,20 +231,54 @@ export default class Figure extends React.Component {
         });
     }
 
-    swapGrouping() {
-        const { data, years } = this.state;
+    createFigure(options) {
+        var figureArr = []
+        figureArr.push(
+            <HighchartsReact
+                highcharts={Highcharts}
+                options={options}
+            />
+        );
+        this.setState({
+            figure: figureArr,
+            options: options
+        });
+    }
 
-        var testData = [];
-        var testGroup = [];
+    swapGrouping() {
+        console.log('Swapping grouping');
+        const { data, years, swapped, type, title } = this.state;
+
+        if (swapped) {
+            var options = this.createOptions(type, title, years, data);
+            this.createFigure(options);
+
+            this.setState({
+                swapped: !swapped
+            });
+            return;
+        }
         
-        var test = data.map(item => {
-            testGroup.push(item.name);
-            item.data.map((dataValue, idx) => {
-                testData.push({
-                    name: years[idx],
-                    data: 
-                })
+        var newSeries = [];
+        var newCategory = [];
+        data.map((item, idx) => {
+            newCategory.push(item.name);
+            item.data.map((value, idx) => {
+                if (newSeries[idx] === undefined) {
+                    newSeries[idx] = {
+                        name: years[idx],
+                        data: [value]
+                    };
+                } else {
+                    newSeries[idx].data.push(value);
+                }
             })
+        });
+
+        var options = this.createOptions(type, title, newCategory, newSeries);
+        this.createFigure(options);
+        this.setState({
+            swapped: !swapped
         });
     }
 
