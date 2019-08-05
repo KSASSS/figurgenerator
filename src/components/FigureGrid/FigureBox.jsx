@@ -12,6 +12,14 @@ import Input from "@material-ui/core/Input";
 
 import Box from '@material-ui/core/Box';
 
+/* Endre tittel imports */
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
 /* Paper import (brukes til å teste grid) */
 import Paper from "@material-ui/core/Paper";
 
@@ -54,32 +62,38 @@ class FigureBox extends React.Component {
             labelWidth: 0,
             figureType: 1   ,
             url: '',
+            open: false,
+            closed: true,
+            titleInput: '',
         }
         this.inputLabel = React.createRef(null);
+        this.titleField = React.createRef();
+
         this.changeFigureType = this.changeFigureType.bind(this);
         this.figureElement = React.createRef();
         this.removeFigureBox = this.removeFigureBox.bind(this);
         this.changeFigureTitle = this.changeFigureTitle.bind(this);
         this.changeFigureGrouping = this.changeFigureGrouping.bind(this);
+        this.handleClose = this.handleClose.bind(this);
+        this.handleOpen = this.handleOpen.bind(this);
+        this.handleInput = this.handleInput.bind(this);
+        
     }
 
     componentDidMount() {
-        var urlMeasures = this.props.measures.map(measureName => {
-            var newName = measureName.replace(/\ /g, '%20');
-            newName.replace(/æ/g, '%C3%A6')
-            newName.replace(/ø/g, '%C3%B8')
-            newName.replace(/å/g, '%C3%A5')
+        const { measures, number, regions, title} = this.props;
 
-            return newName;
-        })
-        var datasets = '?datasett=' + urlMeasures.sort();
-        var years = '&årstall=' + this.props.years.sort();
-        var regions = '&regioner=' + this.props.regions.sort();
-
-        var url = figureBaseUrl + datasets + regions + years;
+        var url = this.createUrl();
 
         var figureArr = [
-            <Figure key={this.props.number + ' ' + this.props.title} title={this.props.title} ref={this.figureElement} figureType='column' url={url} regions={this.props.regions} measures={this.props.measures}/>
+            <Figure
+                key={number + ' ' + title}
+                figureType='column'
+                measures={measures}
+                regions={regions}
+                title={title} ref={this.figureElement}
+                url={url}                
+            />
         ]
         this.setState({
             figure: figureArr,
@@ -87,6 +101,25 @@ class FigureBox extends React.Component {
             url: url,
             figureType: 1
         })
+    }
+
+    createUrl() {
+        const { measures, regions, years } = this.props;
+
+        var urlMeasures = measures.map(measureName => {
+            var newName = measureName.replace(/\ /g, '%20');
+            newName.replace(/æ/g, '%C3%A6')
+            newName.replace(/ø/g, '%C3%B8')
+            newName.replace(/å/g, '%C3%A5')
+
+            return newName;
+        });
+
+        var datasetsQuery = '?datasett=' + urlMeasures.sort();
+        var yearsQuery = '&årstall=' + years.sort();
+        var regionsQuery = '&regioner=' + regions.sort();
+
+        return figureBaseUrl + datasetsQuery + regionsQuery + yearsQuery;
     }
 
     changeFigureType(value) {
@@ -127,11 +160,33 @@ class FigureBox extends React.Component {
     }
 
     changeFigureTitle(event) {
-        this.figureElement.current.changeTitle('test');
+        const { titleInput } = this.state;
+
+        this.figureElement.current.changeTitle(titleInput);
+
+        this.handleClose();
     }
 
     changeFigureGrouping(event) {
         this.figureElement.current.swapGrouping();
+    }
+
+    handleClose() {
+        this.setState({
+            open: false
+        });
+    }
+
+    handleOpen() {
+        this.setState({
+            open: true
+        });
+    }
+
+    handleInput(event) {
+        this.setState({
+            titleInput: event.target.value
+        });
     }
 
     render() {
@@ -156,9 +211,32 @@ class FigureBox extends React.Component {
                         <MenuItem key='wtf4' value={4}>Pie</MenuItem>
                     </Select>
                     {this.state.figure}
-                    <Button className={classes.titleButton} onClick={this.changeFigureTitle} disabled>Endre tittel</Button>
+                    <Button className={classes.titleButton} onClick={this.handleOpen} >Endre tittel</Button>
                     <Button className={classes.swapButton} onClick={this.changeFigureGrouping}><Autorenew/></Button>
                     <Button className={classes.removeButton} onClick={this.removeFigureBox}>Fjern figur<Close /></Button>
+                    <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
+                        <DialogTitle id="form-dialog-title">Endre tittel</DialogTitle>
+                        <DialogContent>
+                            <TextField
+                                ref={this.titleField}
+                                onChange={this.handleInput}
+                                autoFocus
+                                margin="dense"
+                                id="name"
+                                label="Ny tittel"
+                                type="email"
+                                fullWidth
+                            />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.handleClose} color="primary">
+                                Avbryt
+                            </Button>
+                            <Button onClick={this.changeFigureTitle} color="primary">
+                                Endre
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                 </Paper>
             </div>
         );

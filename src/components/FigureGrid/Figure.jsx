@@ -27,6 +27,8 @@ export default class Figure extends React.Component {
             options: {},
             swapped: false,
         }
+
+        this.figureRef = React.createRef();
     }
 
     componentDidMount() {
@@ -88,6 +90,7 @@ export default class Figure extends React.Component {
             figureArr.push(
                 <HighchartsReact
                     highcharts={Highcharts}
+                    ref={this.figureRef}
                     options={options}
                 />
             );
@@ -111,15 +114,14 @@ export default class Figure extends React.Component {
 
         var options = this.createOptions(figureType, title, years, data);
 
-        var figureArr = []
-        figureArr.push(
-            <HighchartsReact
-                highcharts={Highcharts}
-                options={options}
-            />
-        );
+        var newType = {
+            chart: {
+                type: figureType
+            }
+        }
+
+        this.figureRef.current.chart.update(newType);
         this.setState({
-            figure: figureArr,
             type: figureType,
             swapped: false,
         });
@@ -218,15 +220,22 @@ export default class Figure extends React.Component {
         const { type, years, data} = this.state;
         var options = this.createOptions(type, newTitle, years, data);
 
-        var figureArr = []
+        var options = {
+            title: {
+                text: newTitle
+            }
+        }
+
+        this.figureRef.current.chart.update(options);
+        /*var figureArr = []
         figureArr.push(
             <HighchartsReact
                 highcharts={Highcharts}
                 options={options}
             />
-        );
+        );*/
         this.setState({
-            figure: figureArr,
+            //figure: figureArr,
             options: options
         });
     }
@@ -250,9 +259,17 @@ export default class Figure extends React.Component {
         const { data, years, swapped, type, title } = this.state;
 
         if (swapped) {
-            var options = this.createOptions(type, title, years, data);
-            this.createFigure(options);
+            //var options = this.createOptions(type, title, years, data);
+            //this.createFigure(options);
 
+            var options = {
+                xAxis: {
+                    categories: years
+                },
+                series: data
+            }
+
+            this.figureRef.current.chart.update(options, true, true);
             this.setState({
                 swapped: !swapped
             });
@@ -275,8 +292,14 @@ export default class Figure extends React.Component {
             })
         });
 
-        var options = this.createOptions(type, title, newCategory, newSeries);
-        this.createFigure(options);
+        var options = {
+            series: newSeries,
+            xAxis: {
+                categories: newCategory
+            }
+        }
+
+        this.figureRef.current.chart.update(options, true, true);
         this.setState({
             swapped: !swapped
         });

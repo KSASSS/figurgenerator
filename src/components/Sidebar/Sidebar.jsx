@@ -79,6 +79,10 @@ class Sidebar extends React.Component {
         fetch(`${indikatorURL}`, getMethod)
         .then(response => response.json())
         .then(result => {
+            /*var result = result.map(indikator => {
+                return indikator.charAt(0).toUpperCase() + indikator.slice(1);
+            })*/
+
             this.setState({
                 indikatorer: result.sort()
             });
@@ -151,11 +155,9 @@ class Sidebar extends React.Component {
     }
 
     handleInput() {
-        console.log('start');
         Object.keys(this.state.references).map(fdd => {
             this.state.references[fdd].current.searchForFilter(event.target.value);
         })
-        console.log('end');
     }
 
     resetAllFilters() {
