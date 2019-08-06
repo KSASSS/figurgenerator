@@ -87,16 +87,9 @@ class App extends React.Component {
         console.log('Removing active filter ' + filterName + ' from App');
         var filterGroup = this.state.activeFilters[groupName];
 
-        console.log('Before');
-        console.log(this.state.activeFilters)
-        console.log(filterGroup);
-
         if (groupName === 'Region') {
             var regionCode = regionInfo.find(r => r.name === filterName).code;
-            console.log(regionCode + ' rc');
             filterGroup = filterGroup.filter(filterItem => filterItem !== regionCode);
-            console.log('After');
-            console.log(filterGroup);
         } else {
             filterGroup = filterGroup.filter(filterItem => filterItem !== filterName);
         }
@@ -122,7 +115,7 @@ class App extends React.Component {
 
     render() {
         const { classes } = this.props;
-        
+
         return(
             <div>
             <Box className={classes.root} m={0}>

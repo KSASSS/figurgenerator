@@ -12,8 +12,6 @@ import Paper from "@material-ui/core/Paper";
 
 import TextField from '@material-ui/core/TextField';
 
-import ChosenFilterbox from 'components/ChosenFilterbox/ChosenFilterbox'
-
 import Box from '@material-ui/core/Box';
 
 import { withStyles } from '@material-ui/styles';

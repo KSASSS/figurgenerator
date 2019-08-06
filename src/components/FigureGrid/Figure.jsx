@@ -26,27 +26,59 @@ export default class Figure extends React.Component {
             title: '',
             options: {},
             swapped: false,
+            categories: {},
+            series: {},
         }
 
         this.figureRef = React.createRef();
     }
 
     componentDidMount() {
+        const { measures, regions, url, years } = this.props;
+        var series = [];
+        var categories = [];
         console.log('Fetching data for figure');
-        HC_exporting(Highcharts);
-        Highcharts.setOptions({
-            lang: {
-                numericSymbols: null //otherwise by default ['k', 'M', 'G', 'T', 'P', 'E']
-            },
-        })
+        console.log(url);
         
-        fetch(this.props.url, getMethod)
+        fetch(url, getMethod)
         .then(result => {
             return result.json();
         })
         .then(data => {
             //TODO check if 200 or not?
             console.log('Data was fetched successfully');
+            console.log(data);
+
+            if (measures.length === 1) {
+                console.log('Kun en measure');
+            } else if (regions.length === 1) {
+                console.log('Kun en region');
+            } else {
+                console.log('Kun ett år');
+                categories = Object.keys(data).map(regionNumber => {
+                    return regionInfo.find(r => parseInt(r.code) === parseInt(regionNumber)).name;
+                })
+                Object.keys(data).map(regionNumber => {
+                    Object.keys(data[regionNumber].Data).map(measureName => {
+                        console.log('Keys');
+                        var seriesPoint = series.find(s => s.name === measureName);
+                        if (seriesPoint === undefined) {
+                            series.push({
+                                name: measureName,
+                                data: data[regionNumber].Data[measureName]
+                            });
+                        } else {
+                            seriesPoint.data.push(data[regionNumber].Data[measureName][0]);
+                        }
+                    });
+                });
+                console.log('Series')
+                console.log(series);
+                console.log('Categories: ' + categories);
+            }
+
+
+            /*            
             var dataWithRegionName = this.props.regions.map(regionNumber => {
                 var region = parseInt(regionNumber);
                 return {
@@ -62,12 +94,14 @@ export default class Figure extends React.Component {
             var years = data[parseInt(this.props.regions[0])].Years;
 
             var dataValues = dataWithRegionName.map(region => {
-                return {
-                    name: region.name,
-                    data: (region.data.Data[this.props.measures] !== null ? region.data.Data[this.props.measures]: 0)
-                }
+                this.props.measures.map(measure => {
+                    return {
+                        name: region.name,
+                        data: (region.data.Data[measure] !== null ? region.data.Data[measure]: 0)
+                    }
+                })
             })
-            
+            /*
             var pieDataValues = dataWithRegionName.map(region => {
                 console.log(region.data);
                 console.log(region.data.Data[this.props.measures[0]]);
@@ -76,16 +110,19 @@ export default class Figure extends React.Component {
                     y: (region.data.Data[this.props.measures][0] !== null ? region.data.Data[this.props.measures][0]: 0)
                 }
             })
-            /* Kode brukt for å endre navnene på x aksen til kommunenavn
-            Trenger litt rework da år også må flyttes litt på.
-
-            var xAxisData = this.props.regions.map(item => {
-                return regionInfo.find(r => r.code === item).name 
-            });
             */
+            var options = this.createOptions(this.props.figureType, this.props.title, categories, series);
 
-            var options = this.createOptions(this.props.figureType, this.props.measures, years, dataValues);
+            //Enable hamburgermenu in chart
+            HC_exporting(Highcharts);
 
+            //Remove k notation on big numbers
+            Highcharts.setOptions({
+                lang: {
+                    numericSymbols: null //otherwise by default ['k', 'M', 'G', 'T', 'P', 'E']
+                },
+            })
+            
             var figureArr = [];
             figureArr.push(
                 <HighchartsReact
@@ -97,12 +134,14 @@ export default class Figure extends React.Component {
 
             this.setState({
                 figure: figureArr,
-                data: dataValues,
+                data: series,
+                series: series,
                 years: years,
-                pieData: pieDataValues,
+                //pieData: pieDataValues,
                 options: options,
                 type: this.props.figureType,
-                title: this.props.measures
+                title: this.props.title,
+                categories: categories
             });
         });
     }
@@ -256,7 +295,7 @@ export default class Figure extends React.Component {
 
     swapGrouping() {
         console.log('Swapping grouping');
-        const { data, years, swapped, type, title } = this.state;
+        const { data, years, swapped, type, title, categories, series } = this.state;
 
         if (swapped) {
             //var options = this.createOptions(type, title, years, data);
@@ -264,9 +303,9 @@ export default class Figure extends React.Component {
 
             var options = {
                 xAxis: {
-                    categories: years
+                    categories: categories
                 },
-                series: data
+                series: series
             }
 
             this.figureRef.current.chart.update(options, true, true);
@@ -278,12 +317,12 @@ export default class Figure extends React.Component {
         
         var newSeries = [];
         var newCategory = [];
-        data.map((item, idx) => {
+        series.map((item, idx) => {
             newCategory.push(item.name);
             item.data.map((value, idx) => {
                 if (newSeries[idx] === undefined) {
                     newSeries[idx] = {
-                        name: years[idx],
+                        name: categories[idx],
                         data: [value]
                     };
                 } else {

@@ -50,12 +50,12 @@ class FilterCheckboxGroup extends React.Component {
         var alternativesArr = [
             <FilterCheckbox
                 className={classes.allCheckbox}
-                key={this.props.groupTitle + 'Alle'}
-                value={'Alle'} 
+                key={this.props.groupTitle + 'Merk/fjern alle'}
+                value={'Merk/fjern alle'} 
                 defaultCheckValue={false} 
                 checkAll={this.checkAll} 
                 checkboxGotUpdated={this.checkboxGotUpdated} 
-                ref={this.createAndReturnRef('Alle', false)}
+                ref={this.createAndReturnRef('Merk/fjern alle', false)}
             />
         ]
         

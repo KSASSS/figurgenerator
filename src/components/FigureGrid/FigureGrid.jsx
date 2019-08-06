@@ -13,6 +13,8 @@ import FigureBox from './FigureBox.jsx'
 
 import { withStyles } from '@material-ui/styles';
 
+import { regionInfo } from 'constants'
+
 const styles = theme => ({
     root: {
       display: 'flex',
@@ -24,7 +26,6 @@ class FigureGrid extends React.Component {
         super(props);
 
         this.state = {
-            test: [],
             figureBoxes: [],
             figureBoxTracker: [],
             figureCounter: 0,
@@ -33,44 +34,32 @@ class FigureGrid extends React.Component {
         this.removeFigureBox = this.removeFigureBox.bind(this);
     }
 
-    componentDidMount() {
-        var tmp = [];
-        var testArr = [
-            'Box1',
-            'Box2',
-            'Box3'
-        ]
-
-        testArr.map(item => {
-            tmp.push(<FigureBox title={item} />)
-        })
-
-        this.setState({test: tmp});
-    }
-
     addFigureBox(activeFilters) {
-        console.log('Adding a new figurebox with id figure' + this.state.figureCounter);
-        var tmpFigBox = this.state.figureBoxes;
-        var title = '';
+        const { figureBoxes, figureCounter } = this.state;
 
-        if (activeFilters.Region.length === 1) {
-            title = activeFilters.Region[0];
-        } else {
-            title = activeFilters.Indikator[0];
-        }
+        console.log('Adding a new figurebox with id figure' + figureCounter);
         
+        var title = '';
+        if (activeFilters.Indikator.length === 1){
+            title = activeFilters.Indikator[0];
+        } else {
+            title = regionInfo.find(r => r.code === activeFilters.Region[0]).name;
+        }
+
+        var tmpFigBox = figureBoxes;
         tmpFigBox.push({
-            id: 'figure' + this.state.figureCounter,
-            figureBox: <FigureBox 
-                key={'figure' + this.state.figureCounter}
-                id={'figure' + this.state.figureCounter}
-                number={this.state.figureCounter}
-                title={title} 
-                regions={activeFilters.Region}
-                years={activeFilters.År}
-                measures={activeFilters.Indikator}
-                removeFigureBox={this.removeFigureBox}
-            />
+            id: 'figure' + figureCounter,
+            figureBox: 
+                <FigureBox 
+                    key={'figure' + figureCounter}
+                    id={'figure' + figureCounter}
+                    number={figureCounter}
+                    title={title} 
+                    regions={activeFilters.Region}
+                    years={activeFilters.År}
+                    measures={activeFilters.Indikator}
+                    removeFigureBox={this.removeFigureBox}
+                />
         }
             
         )
@@ -79,8 +68,6 @@ class FigureGrid extends React.Component {
             figureBoxes: tmpFigBox,
             figureCounter: this.state.figureCounter + 1
         })
-
-        //console.log(this.state.figureBoxes);
     }
 
     removeFigureBox(id) {

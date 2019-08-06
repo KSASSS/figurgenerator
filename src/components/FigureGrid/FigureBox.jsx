@@ -31,7 +31,7 @@ import { withStyles } from '@material-ui/styles';
 
 
 /* Constants */
-import {figureBaseUrl, getMethod} from 'constants'
+import { figureBaseUrl } from 'constants'
 
 const styles = theme => ({
     root: {
@@ -85,6 +85,9 @@ class FigureBox extends React.Component {
 
         var url = this.createUrl();
 
+        
+        console.log('Box title');
+        console.log(title);
         var figureArr = [
             <Figure
                 key={number + ' ' + title}
