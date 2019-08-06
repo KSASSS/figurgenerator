@@ -162,7 +162,6 @@ export default class Figure extends React.Component {
         this.figureRef.current.chart.update(newType);
         this.setState({
             type: figureType,
-            swapped: false,
         });
     }
 

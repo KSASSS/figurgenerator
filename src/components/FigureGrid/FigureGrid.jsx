@@ -42,8 +42,10 @@ class FigureGrid extends React.Component {
         var title = '';
         if (activeFilters.Indikator.length === 1){
             title = activeFilters.Indikator[0];
-        } else {
+        } else if (activeFilters.Region.length === 1) {
             title = regionInfo.find(r => r.code === activeFilters.Region[0]).name;
+        } else {
+            title = activeFilters.År[0];
         }
 
         var tmpFigBox = figureBoxes;
