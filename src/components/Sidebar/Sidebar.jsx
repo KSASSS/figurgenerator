@@ -12,8 +12,6 @@ import Paper from "@material-ui/core/Paper";
 
 import TextField from '@material-ui/core/TextField';
 
-import ChosenFilterbox from 'components/ChosenFilterbox/ChosenFilterbox'
-
 import Box from '@material-ui/core/Box';
 
 import { withStyles } from '@material-ui/styles';
@@ -50,7 +48,7 @@ const styles = theme => ({
         top: 42,
         position: 'fixed',
     }
-  });
+});
 class Sidebar extends React.Component {
     
     constructor(props) {
@@ -79,7 +77,14 @@ class Sidebar extends React.Component {
         fetch(`${indikatorURL}`, getMethod)
         .then(response => response.json())
         .then(result => {
-            this.setState({indikatorer: result.slice(0, 5)});
+            /*var result = result.map(indikator => {
+                return indikator.charAt(0).toUpperCase() + indikator.slice(1);
+            })*/
+
+            this.setState({
+                indikatorer: result.sort()
+            });
+            
             var tmpArr = [];
             
             var regions = regionInfo.map(item => {
@@ -148,11 +153,9 @@ class Sidebar extends React.Component {
     }
 
     handleInput() {
-        console.log('start');
         Object.keys(this.state.references).map(fdd => {
             this.state.references[fdd].current.searchForFilter(event.target.value);
         })
-        console.log('end');
     }
 
     resetAllFilters() {

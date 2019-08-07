@@ -12,10 +12,18 @@ import Input from "@material-ui/core/Input";
 
 import Box from '@material-ui/core/Box';
 
+/* Endre tittel imports */
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
 /* Paper import (brukes til å teste grid) */
 import Paper from "@material-ui/core/Paper";
 
-import { Plus, Close } from 'mdi-material-ui'
+import { Autorenew, Close } from 'mdi-material-ui'
 
 import Figure from './Figure.jsx'
 
@@ -23,7 +31,7 @@ import { withStyles } from '@material-ui/styles';
 
 
 /* Constants */
-import {figureBaseUrl, getMethod} from 'constants'
+import { figureBaseUrl, getMethod, regionInfo } from 'constants'
 
 const styles = theme => ({
     root: {
@@ -35,10 +43,13 @@ const styles = theme => ({
     },
     removeButton: {
         color: 'red',
-        width: '50%',
+        width: '33%',
     },
     titleButton: {
-        width: '50%',
+        width: '33%',
+    },
+    swapButton: {
+        width: '33%',
     }
   });
 
@@ -51,37 +62,119 @@ class FigureBox extends React.Component {
             labelWidth: 0,
             figureType: 1   ,
             url: '',
+            open: false,
+            closed: true,
+            titleInput: '',
+            pieCompatible: false,
+            fetched: false,
         }
         this.inputLabel = React.createRef(null);
+        this.titleField = React.createRef();
+
         this.changeFigureType = this.changeFigureType.bind(this);
         this.figureElement = React.createRef();
         this.removeFigureBox = this.removeFigureBox.bind(this);
+        this.changeFigureTitle = this.changeFigureTitle.bind(this);
+        this.changeFigureGrouping = this.changeFigureGrouping.bind(this);
+        this.handleClose = this.handleClose.bind(this);
+        this.handleOpen = this.handleOpen.bind(this);
+        this.handleInput = this.handleInput.bind(this);
+        
     }
 
     componentDidMount() {
-        var urlMeasures = this.props.measures.map(measureName => {
+        const { measures, number, regions, title} = this.props;
+
+        var url = this.createUrl();
+
+        fetch(url, getMethod)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            var hcData = this.createCategoryAndSeriesData(data);
+
+            var figureArr = [
+                <Figure
+                    key={number + ' ' + title}
+                    figureType='column'
+                    categories={hcData.categories}
+                    series={hcData.series}
+                    title={title} 
+                    ref={this.figureElement}      
+                />
+            ];
+    
+            this.setState({
+                figure: figureArr,
+                figureType: 1,
+                fetched: true
+            })
+
+        }).catch(error => {
+            console.log(error)
+        });
+    }
+
+    createCategoryAndSeriesData(data) {
+        const { measures, regions, years} = this.props;
+
+        var result = {
+            series: [],
+            categories: [],
+        }
+        
+        //Set categories
+        if (years.length === 1) {
+            // Group on regions
+            result.categories = Object.keys(data).map(regionNumber => {
+                return regionInfo.find(r => parseInt(r.code) === parseInt(regionNumber)).name;
+            })
+        } else {
+            // Group on years
+            result.categories = data[parseInt(regions[0])].Years;
+        }
+
+        var regionsAsColumns = (measures.length === 1);
+        //Set series
+        Object.keys(data).map(regionNumber => {
+            var regionName = regionInfo.find(r => parseInt(r.code) === parseInt(regionNumber)).name;
+            Object.keys(data[regionNumber].Data).map(measureName => {
+                var seriesPoint = regionsAsColumns ? result.series.find(s => s.name === regionName): result.series.find(s => s.name === measureName);
+                if (seriesPoint === undefined) {
+                    result.series.push({
+                        name: regionsAsColumns ? regionName: measureName,
+                        data: data[regionNumber].Data[measureName]
+                    })
+                } else {
+                    seriesPoint.data.push(data[regionNumber].Data[measureName][0]);
+                }
+            });
+        });
+        
+        return result;
+    }
+
+    createUrl() {
+        const { measures, regions, years } = this.props;
+
+        var urlMeasures = measures.map(measureName => {
             var newName = measureName.replace(/\ /g, '%20');
             newName.replace(/æ/g, '%C3%A6')
             newName.replace(/ø/g, '%C3%B8')
             newName.replace(/å/g, '%C3%A5')
 
             return newName;
-        })
-        var datasets = '?datasett=' + urlMeasures.sort();
-        var years = '&årstall=' + this.props.years.sort();
-        var regions = '&regioner=' + this.props.regions.sort();
+        });
 
-        var url = figureBaseUrl + datasets + regions + years;
+        var datasetsQuery = '?datasett=' + urlMeasures.sort();
+        var yearsQuery = '&årstall=' + years.sort();
+        var regionsQuery = '&regioner=' + regions.sort();
 
-        var figureArr = [
-            <Figure key={this.props.number + ' ' + this.props.title} title={this.props.title} ref={this.figureElement} figureType='column' url={url} regions={this.props.regions} measures={this.props.measures}/>
-        ]
-        this.setState({
-            figure: figureArr,
-            //labelWidth: this.inputLabel.current.offsetWidth,
-            url: url,
-            figureType: 1
-        })
+        return figureBaseUrl + datasetsQuery + regionsQuery + yearsQuery;
     }
 
     changeFigureType(value) {
@@ -121,10 +214,41 @@ class FigureBox extends React.Component {
         this.props.removeFigureBox(this.props.id);
     }
 
+    changeFigureTitle(event) {
+        const { titleInput } = this.state;
+
+        this.figureElement.current.changeTitle(titleInput);
+
+        this.handleClose();
+    }
+
+    changeFigureGrouping(event) {
+        this.figureElement.current.swapGrouping();
+    }
+
+    handleClose() {
+        this.setState({
+            open: false
+        });
+    }
+
+    handleOpen() {
+        this.setState({
+            open: true
+        });
+    }
+
+    handleInput(event) {
+        this.setState({
+            titleInput: event.target.value
+        });
+    }
+
     render() {
-        const { figureType } = this.state;
+        const { figureType, fetched } = this.state;
         const { classes } = this.props;
         return(
+            fetched ? 
             <div className={classes.root}>
                 <Paper className={classes.paper}>
                        
@@ -137,16 +261,41 @@ class FigureBox extends React.Component {
                         onChange={event => this.changeFigureType(event.target.value)}
                         fullWidth={true}
                     >
-                        <MenuItem key='wtf1' value={1}>Column</MenuItem>
-                        <MenuItem key='wtf2' value={2}>Line</MenuItem>
-                        <MenuItem key='wtf3' value={3}>Bar</MenuItem>
-                        <MenuItem key='wtf4' value={4}>Pie</MenuItem>
+                        <MenuItem key='columnItem' value={1}>Kolonne</MenuItem>
+                        <MenuItem key='lineItem' value={2}>Linje</MenuItem>
+                        <MenuItem key='barItem' value={3}>Stolpe</MenuItem>
+                        <MenuItem key='pieItem' disabled value={4}>Pai</MenuItem>
                     </Select>
                     {this.state.figure}
-                    <Button className={classes.titleButton} disabled>Endre tittel</Button>
+                    <Button className={classes.titleButton} onClick={this.handleOpen} >Endre tittel</Button>
+                    <Button className={classes.swapButton} onClick={this.changeFigureGrouping}><Autorenew/></Button>
                     <Button className={classes.removeButton} onClick={this.removeFigureBox}>Fjern figur<Close /></Button>
+                    <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
+                        <DialogTitle id="form-dialog-title">Endre tittel</DialogTitle>
+                        <DialogContent>
+                            <TextField
+                                ref={this.titleField}
+                                onChange={this.handleInput}
+                                autoFocus
+                                margin="dense"
+                                id="name"
+                                label="Ny tittel"
+                                type="email"
+                                fullWidth
+                            />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.handleClose} color="primary">
+                                Avbryt
+                            </Button>
+                            <Button onClick={this.changeFigureTitle} color="primary">
+                                Endre
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                 </Paper>
             </div>
+            : null
         );
     }
 }

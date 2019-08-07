@@ -87,16 +87,9 @@ class App extends React.Component {
         console.log('Removing active filter ' + filterName + ' from App');
         var filterGroup = this.state.activeFilters[groupName];
 
-        console.log('Before');
-        console.log(this.state.activeFilters)
-        console.log(filterGroup);
-
         if (groupName === 'Region') {
             var regionCode = regionInfo.find(r => r.name === filterName).code;
-            console.log(regionCode + ' rc');
             filterGroup = filterGroup.filter(filterItem => filterItem !== regionCode);
-            console.log('After');
-            console.log(filterGroup);
         } else {
             filterGroup = filterGroup.filter(filterItem => filterItem !== filterName);
         }
@@ -121,9 +114,8 @@ class App extends React.Component {
     }
 
     render() {
-        console.log('wut')
         const { classes } = this.props;
-        console.log(classes);
+
         return(
             <div>
             <Box className={classes.root} m={0}>
@@ -131,27 +123,7 @@ class App extends React.Component {
                 <FigureGrid className={classes.content} ref={this.figureGridElement}/>
             </Box>
             </div>
-            /*
-            <div className={classes.root}>
-                <Sidebar addActiveFilters={this.addActiveFilters} removeActiveFilters={this.removeActiveFilters} createFigureBox={this.createFigureBox}/>
-            <main className={classes.content}>
-                <FigureGrid ref={this.figureGridElement}/>
-            </main>
-            
-            </div>
-            */
         );
-        /**<Sidebar addActiveFilters={this.addActiveFilters} removeActiveFilters={this.removeActiveFilters} createFigureBox={this.createFigureBox}/> */
-        /*return(
-            <Grid className='mainpage' container spacing={2} direction='row'>
-                <Grid container item xs={2} direction='column'>
-                    <Sidebar addActiveFilters={this.addActiveFilters} removeActiveFilters={this.removeActiveFilters} createFigureBox={this.createFigureBox}/>
-                </Grid>
-                <Grid container item xs direction='row'>
-                    <FigureGrid ref={this.figureGridElement}/>
-                </Grid>
-            </Grid>
-        );*/
     }
 }
 

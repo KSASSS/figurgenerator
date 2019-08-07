@@ -7,7 +7,7 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 
 /* Constants */
-import { figureBaseUrl, getMethod, regionInfo } from 'constants'
+import { highchartsOptions, figureBaseUrl, getMethod, regionInfo } from 'constants'
 
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
@@ -20,195 +20,123 @@ export default class Figure extends React.Component {
         this.state = {
             figure: [],
             figureType: 'column',
-            data: [],
             pieData: [],
-            years: [],
+            title: '',
+            swapped: false,
         }
+
+        this.figureRef = React.createRef();
     }
 
     componentDidMount() {
-        console.log('Fetching data for figure');
+        const { categories, figureType, series, title } = this.props;
+
+        var options = highchartsOptions;
+
+        options.chart.type = figureType;
+        options.title.text = title;
+        options.xAxis.categories = categories;
+        options.series = series;
+
+        //Enable hamburgermenu in chart
         HC_exporting(Highcharts);
-        
-        fetch(this.props.url, getMethod)
-        .then(result => {
-            return result.json();
+
+        //Remove k notation on big numbers
+        Highcharts.setOptions({
+            lang: {
+                numericSymbols: null //otherwise by default ['k', 'M', 'G', 'T', 'P', 'E']
+            },
         })
-        .then(data => {
-            //TODO check if 200 or not?
-            console.log('Data was fetched successfully');
-            var dataWithRegionName = this.props.regions.map(regionNumber => {
-                var region = parseInt(regionNumber);
-                return {
-                    name: regionInfo.find(r => r.code === regionNumber).name,
-                    data: (data[region])
-                }
-            });
-
-            dataWithRegionName.sort(function(a, b){
-                return a.name.localeCompare(b.name)
-            })
-
-            var years = data[parseInt(this.props.regions[0])].Years;
-
-            var dataValues = dataWithRegionName.map(region => {
-                console.log('fail');
-                return {
-                    name: region.name,
-                    data: (region.data.Data[this.props.measures] !== null ? region.data.Data[this.props.measures]: 0)
-                }
-            })
-            console.log('not fail?');
             
-            var pieDataValues = dataWithRegionName.map(region => {
-                console.log(region.data);
-                console.log(region.data.Data[this.props.measures[0]]);
-                return {
-                    name: region.name,
-                    y: (region.data.Data[this.props.measures][0] !== null ? region.data.Data[this.props.measures][0]: 0)
-                }
-            })
-            console.log('prob fail');
-            /* Kode brukt for å endre navnene på x aksen til kommunenavn
-            Trenger litt rework da år også må flyttes litt på.
-
-            var xAxisData = this.props.regions.map(item => {
-                return regionInfo.find(r => r.code === item).name 
-            });
-            */
-            var options = {
-                chart: {
-                    type: this.props.figureType,
-                    width: 500
-                },
-                title: {
-                    text: this.props.measures,
-                    style: {
-                        fontSize: '15px'
-                    }
-                },
-                xAxis: {
-                    categories: years
-                },
-                yAxis: {
-                    title: {
-                        text: '',
-                        //text: 'Verdi'
-                    }
-                },
-                series: dataValues,
-                credits: {
-                    enabled: true,
-                    text: 'ks.no',
-                    href: 'https://www.ks.no'
-                },
-                exporting: { 
-                    allowTable: false 
-                },
-            }
-
-            var figureArr = []
-            figureArr.push(<HighchartsReact
+        var figureArr = [];
+        figureArr.push(
+            <HighchartsReact
                 highcharts={Highcharts}
+                ref={this.figureRef}
                 options={options}
-                />)
-            this.setState({
-                figure: figureArr,
-                data: dataValues,
-                years: years,
-                pieData: pieDataValues
-            });
+            />
+        );
+
+        this.setState({
+            figure: figureArr,
+            type: figureType,
+            title: title,
         });
     }
 
     changeFigureType(figureType) {
-        var options = {};
-        if (figureType !== 'pie') {
-            console.log(this.state.data);
-            options = {
-                chart: {
-                    type: figureType
-                },
-                title: {
-                    text: this.props.measures,
-                    style: {
-                        fontSize: '15px'
-                    }
-                },
-                xAxis: {
-                    categories: this.state.years
-                },
-                series: this.state.data,
-                credits: {
-                    enabled: true,
-                    text: 'ks.no',
-                    href: 'https://www.ks.no'
-                },
-            }
-        } else {
-            console.log(this.state.pieData);
-            options = {
-                chart: {
-                    plotBackgroundColor: null,
-                    plotBorderWidth: null,
-                    plotShadow: false,
-                    type: 'pie'
-                },
-                title: {
-                    text: this.props.measures,
-                    style: {
-                        fontSize: '15px'
-                    }
-                },
-                tooltip: {
-                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-                },
+        console.log('Changing from ' + this.state.type + ' to ' + figureType);
 
-                yAxis: {
-                    title: {
-                        text: ''
-                    }
-                },/*
-                tooltip: {
-                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-                },*/
-                plotOptions: {
-                    pie: {
-                        allowPointSelect: true,
-                        cursor: 'pointer',
-                        dataLabels: {
-                            enabled: true,
-                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                            style: {
-                              color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                            }
-                        },
-                        showInLegend: true
-                    }
-                },
-                series: [{
-                    name: 'Regioner',
-                    colorByPoint: true,
-                    data: this.state.pieData
-                }]
+        var newType = {
+            chart: {
+                type: figureType
             }
         }
 
-        var figureArr = []
-        figureArr.push(
-            <HighchartsReact
-                highcharts={Highcharts}
-                options={options}
-            />
-        );
+        this.figureRef.current.chart.update(newType);
         this.setState({
-            figure: figureArr
+            type: figureType,
         });
-        //change the figure to another type (chart, side, etc)
     }
 
-    unMountFigure() {
-        //TODO?
+    changeTitle(newTitle) {
+        var options = {
+            title: {
+                text: newTitle
+            }
+        }
+
+        this.figureRef.current.chart.update(options);
+    }
+
+    swapGrouping() {
+        console.log('Swapping grouping');
+        const { swapped } = this.state;
+        const { categories, series } = this.props;
+
+        // Already swapped, set series and categories back to original values
+        if (swapped) {
+            var options = {
+                xAxis: {
+                    categories: categories
+                },
+                series: series
+            }
+
+            this.figureRef.current.chart.update(options, true, true);
+            this.setState({
+                swapped: !swapped
+            });
+            return;
+        }
+        
+        var newSeries = [];
+        var newCategory = [];
+        series.map((item, idx) => {
+            newCategory.push(item.name);
+            item.data.map((value, idx) => {
+                if (newSeries[idx] === undefined) {
+                    newSeries[idx] = {
+                        name: categories[idx],
+                        data: [value]
+                    };
+                } else {
+                    newSeries[idx].data.push(value);
+                }
+            })
+        });
+
+        var options = {
+            series: newSeries,
+            xAxis: {
+                categories: newCategory
+            }
+        }
+
+        this.figureRef.current.chart.update(options, true, true);
+        this.setState({
+            swapped: !swapped
+        });
     }
 
     render() {

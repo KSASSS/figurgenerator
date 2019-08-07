@@ -1,5 +1,6 @@
 import React, {Component} from "react";
-import { makeStyles } from "@material-ui/core/styles";
+
+import { withStyles } from '@material-ui/styles';
 
 /* Dropdown imports */
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
@@ -13,8 +14,15 @@ import Typography from "@material-ui/core/Typography";
 import FilterCheckboxGroup from 'components/FilterDropdown/FilterCheckboxGroup.jsx';
 
 
+const styles = theme => ({
+  dropdown: {
+    display: 'flex',
+    overflowY: 'auto',
+    maxHeight: 500,
+  },
+});
 
-export default class FilterDropdown extends React.Component {
+class FilterDropdown extends React.Component {
   
   constructor(props) {
     super(props);
@@ -31,7 +39,7 @@ export default class FilterDropdown extends React.Component {
 
   componentDidMount() {
     var tmpArr = [
-      <FilterCheckboxGroup updateFilterDropdown={this.filterGotChosen} groupTitle={this.props.title} values={this.props.values} ref={this.checkBoxList}/>
+      <FilterCheckboxGroup key={this.props.title} updateFilterDropdown={this.filterGotChosen} groupTitle={this.props.title} values={this.props.values} ref={this.checkBoxList}/>
     ]
 
     this.setState({
@@ -54,9 +62,10 @@ export default class FilterDropdown extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
     return (
       <div className='filterdropdown'>
-        <ExpansionPanel defaultExpanded={true}>
+        <ExpansionPanel defaultExpanded={false}>
           <ExpansionPanelSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
@@ -65,7 +74,7 @@ export default class FilterDropdown extends React.Component {
             <Typography>{this.props.title}</Typography>
           </ExpansionPanelSummary>
              
-          <ExpansionPanelDetails>
+          <ExpansionPanelDetails className={classes.dropdown}>
             {this.state.checkboxList}
           </ExpansionPanelDetails>
         </ExpansionPanel>
@@ -73,3 +82,4 @@ export default class FilterDropdown extends React.Component {
       )
     }
 }
+export default withStyles(styles)(FilterDropdown)

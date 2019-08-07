@@ -15,19 +15,13 @@ import { withStyles } from '@material-ui/styles';
 
 const styles = theme => ({
     root: {
-      display: 'flex',
+        display: 'flex',
+        flexWrap: 'wrap',
+        width: 200
     },
     checkbox: {
-        visibility: 'visible',
-        color: 'blue',
+        fontSize: 8, 
     },
-    hiddenCheckbox: {
-        visibility: 'hidden',
-        color: 'blue',
-    },
-    findMe: {
-
-    }
   });
 
 class FilterCheckboxGroup extends React.Component {
@@ -36,11 +30,13 @@ class FilterCheckboxGroup extends React.Component {
         super(props);
 
         this.state = {
+            filtered: false,
             alternatives: [],
+            filteredReferences: [],
             references: [],
+            checkedAlternatives: [],
         }
 
-        this.handleClick = this.handleClick.bind(this);
         this.checkboxGotUpdated = this.checkboxGotUpdated.bind(this);
         this.updateAlternatives = this.updateAlternatives.bind(this);
         this.createAndReturnRef = this.createAndReturnRef.bind(this);
@@ -50,21 +46,36 @@ class FilterCheckboxGroup extends React.Component {
 
     /* On mount create the checkbox alternatives */
     componentDidMount() {
-        const { classes } = this.props;
-        const { testCheck } = this.state;
-        const values = this.props.values;
+        const { classes, values } = this.props;
         var alternativesArr = [
-            <FilterCheckbox value={'Alle'} checkAll={this.checkAll} checkboxGotUpdated={this.checkboxGotUpdated} ref={this.createAndReturnRef('Alle')}/>
+            <FilterCheckbox
+                className={classes.allCheckbox}
+                key={this.props.groupTitle + 'Merk/fjern alle'}
+                value={'Merk/fjern alle'} 
+                defaultCheckValue={false} 
+                checkAll={this.checkAll} 
+                checkboxGotUpdated={this.checkboxGotUpdated} 
+                ref={this.createAndReturnRef('Merk/fjern alle', false)}
+            />
         ]
         
         values.map(item => {
             alternativesArr.push(
-                <FilterCheckbox value={item} checkboxGotUpdated={this.checkboxGotUpdated} ref={this.createAndReturnRef(item)}/>
+                <FilterCheckbox
+                    key={this.props.groupTitle + item}
+                    value={item} 
+                    defaultCheckValue={false} 
+                    checkboxGotUpdated={this.checkboxGotUpdated} 
+                    ref={this.createAndReturnRef(item, false)}
+                />
             )
-            
+            this.setState({
+                [item]: false
+            })
         });
 
         this.setState({
+            Alle: false,
             alternatives: alternativesArr
         });
         
@@ -73,79 +84,92 @@ class FilterCheckboxGroup extends React.Component {
 
     checkboxGotUpdated(name, checked) {
         this.props.updateFilterDropdown(name, checked);
-    }
-
-    createAndReturnRef(id) {
-        var tmpRef = this.state.references;
-        tmpRef[id] = React.createRef();
-        this.setState({references: tmpRef});
-
-        return this.state.references[id];
-    }
-
-    changeCheckedState(checkboxName) {
-        var checked = !this.state[checkboxName];
-        //console.log(this.state);
         this.setState({
-            [checkboxName]: !this.state[checkboxName]
-        }, () => {
-            //this.setState({alternatives: this.state.alternatives});
-        });
+            [name]: checked
+        })
+    }
+
+    createAndReturnRef(id, filtered) {
+        const { references, filteredReferences} = this.state;
+        var tmpRef;
+
+        if (filtered) {
+            tmpRef = filteredReferences;
+            tmpRef[id] = React.createRef();
+            this.setState({
+                filteredReferences: tmpRef
+            });
+
+            return filteredReferences[id];
+        } else {
+            tmpRef = references;
+            tmpRef[id] = React.createRef();
+            this.setState({
+                references: tmpRef
+            });
+
+            return this.state.references[id];
+        }
     }
 
     updateAlternatives(input) {
         if (input === '') {
+
             this.setState({
                 filtered: false
+            }, () => {
+                this.state.alternatives.map(alts => {
+                    this.state.references[alts.props.value].current.setChecked(this.state[alts.props.value]);
+                });
             });
             return;
         }
         
-        var tmp = this.state.alternatives.filter(alts => {
+        var tmp = this.state.alternatives.map(alts => {
             if (alts.props.value.toLowerCase().match(input) !== null) {
-                //this.state.references[alts.props.value].checked = true;
-                console.log(this.state.references[alts.props.value]);
+                return (
+                    <FilterCheckbox 
+                        value={alts.props.value} 
+                        defaultCheckValue={this.state[alts.props.value]} 
+                        checkboxGotUpdated={this.checkboxGotUpdated} 
+                        ref={this.createAndReturnRef(alts.props.value, true)}
+                    />
+                )
             }
+        });
 
-            return alts.props.value.toLowerCase().match(input) !== null
-        })
-        console.log(this.state.alternatives);
-        
         this.setState({
             filtered: true,
             filteredAlternatives: tmp,
-            Drammen: false
         });
-        console.log(this.state);
     }
 
     checkAll(checked) {
+        console.log('Changed checked value of all to ' + checked);
         const { references } = this.state;
-        console.log(checked);
 
         Object.keys(references).map(cb => {
-            if (cb !== 'Alle') {
+            if (cb !== 'Merk/fjern alle') {
                 this.props.updateFilterDropdown(cb, checked);
                 references[cb].current.setChecked(checked);
+                this.setState({
+                    [cb]: checked
+                })
+            } else {
+                references[cb].current.setChecked(checked);
+                this.setState({
+                    [cb]: checked
+                })
             }
         });
     }
 
-    handleClick() {
-        const { references } = this.state;
-        console.log(references);
-
-        Object.keys(references).map(cb => {
-            this.props.updateFilterDropdown(cb, true);
-            references[cb].current.setAsChecked();
-        })
-    }
-
     render() {
-        //const { alternatives, filtered, filteredAlternatives } = this.state;
+        const { alternatives, filtered, filteredAlternatives } = this.state;
+        const { classes } = this.props;
         return (
-            <FormGroup row={true}>
-                {this.state.alternatives}
+            <FormGroup className={classes.root} row={true}>
+                {filtered ? filteredAlternatives : alternatives}
             </FormGroup>
         )
     }
