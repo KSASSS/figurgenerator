@@ -31,7 +31,7 @@ import { withStyles } from '@material-ui/styles';
 
 
 /* Constants */
-import { figureBaseUrl } from 'constants'
+import { figureBaseUrl, getMethod, regionInfo } from 'constants'
 
 const styles = theme => ({
     root: {
@@ -65,6 +65,8 @@ class FigureBox extends React.Component {
             open: false,
             closed: true,
             titleInput: '',
+            pieCompatible: false,
+            fetched: false,
         }
         this.inputLabel = React.createRef(null);
         this.titleField = React.createRef();
@@ -85,25 +87,75 @@ class FigureBox extends React.Component {
 
         var url = this.createUrl();
 
-        
-        console.log('Box title');
-        console.log(title);
-        var figureArr = [
-            <Figure
-                key={number + ' ' + title}
-                figureType='column'
-                measures={measures}
-                regions={regions}
-                title={title} ref={this.figureElement}
-                url={url}                
-            />
-        ]
-        this.setState({
-            figure: figureArr,
-            //labelWidth: this.inputLabel.current.offsetWidth,
-            url: url,
-            figureType: 1
+        fetch(url, getMethod)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+            return response.json();
         })
+        .then(data => {
+            var hcData = this.createCategoryAndSeriesData(data);
+
+            var figureArr = [
+                <Figure
+                    key={number + ' ' + title}
+                    figureType='column'
+                    categories={hcData.categories}
+                    series={hcData.series}
+                    title={title} 
+                    ref={this.figureElement}      
+                />
+            ];
+    
+            this.setState({
+                figure: figureArr,
+                figureType: 1,
+                fetched: true
+            })
+
+        }).catch(error => {
+            console.log(error)
+        });
+    }
+
+    createCategoryAndSeriesData(data) {
+        const { measures, regions, years} = this.props;
+
+        var result = {
+            series: [],
+            categories: [],
+        }
+        
+        //Set categories
+        if (years.length === 1) {
+            // Group on regions
+            result.categories = Object.keys(data).map(regionNumber => {
+                return regionInfo.find(r => parseInt(r.code) === parseInt(regionNumber)).name;
+            })
+        } else {
+            // Group on years
+            result.categories = data[parseInt(regions[0])].Years;
+        }
+
+        var regionsAsColumns = (measures.length === 1);
+        //Set series
+        Object.keys(data).map(regionNumber => {
+            var regionName = regionInfo.find(r => parseInt(r.code) === parseInt(regionNumber)).name;
+            Object.keys(data[regionNumber].Data).map(measureName => {
+                var seriesPoint = regionsAsColumns ? result.series.find(s => s.name === regionName): result.series.find(s => s.name === measureName);
+                if (seriesPoint === undefined) {
+                    result.series.push({
+                        name: regionsAsColumns ? regionName: measureName,
+                        data: data[regionNumber].Data[measureName]
+                    })
+                } else {
+                    seriesPoint.data.push(data[regionNumber].Data[measureName][0]);
+                }
+            });
+        });
+        
+        return result;
     }
 
     createUrl() {
@@ -193,9 +245,10 @@ class FigureBox extends React.Component {
     }
 
     render() {
-        const { figureType } = this.state;
+        const { figureType, fetched } = this.state;
         const { classes } = this.props;
         return(
+            fetched ? 
             <div className={classes.root}>
                 <Paper className={classes.paper}>
                        
@@ -208,10 +261,10 @@ class FigureBox extends React.Component {
                         onChange={event => this.changeFigureType(event.target.value)}
                         fullWidth={true}
                     >
-                        <MenuItem key='wtf1' value={1}>Column</MenuItem>
-                        <MenuItem key='wtf2' value={2}>Line</MenuItem>
-                        <MenuItem key='wtf3' value={3}>Bar</MenuItem>
-                        <MenuItem key='wtf4' value={4}>Pie</MenuItem>
+                        <MenuItem key='columnItem' value={1}>Kolonne</MenuItem>
+                        <MenuItem key='lineItem' value={2}>Linje</MenuItem>
+                        <MenuItem key='barItem' value={3}>Stolpe</MenuItem>
+                        <MenuItem key='pieItem' disabled value={4}>Pai</MenuItem>
                     </Select>
                     {this.state.figure}
                     <Button className={classes.titleButton} onClick={this.handleOpen} >Endre tittel</Button>
@@ -242,6 +295,7 @@ class FigureBox extends React.Component {
                     </Dialog>
                 </Paper>
             </div>
+            : null
         );
     }
 }

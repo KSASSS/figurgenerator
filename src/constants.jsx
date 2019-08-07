@@ -53,3 +53,35 @@ export const validYears = [
 ]
 
 export const drawerWidth = 240;
+
+export const highchartsOptions = {
+    chart: {
+        type: '',
+        width: 500,
+    },
+    title: {
+        text: '',
+        style: {
+            fontSize: '15px'
+        }
+    },
+    xAxis: {
+        categories: []
+    },
+    yAxis: {
+        title: {
+            text: '',
+        }
+    },
+    series: {},
+    credits: {
+        enabled: true,
+        text: 'ks.no',
+        href: 'https://www.ks.no'
+    },
+    exporting: { 
+        allowTable: false 
+    },
+};;
+
+export const highchartsPieOptions = {};

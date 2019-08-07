@@ -149,7 +149,7 @@ class FilterCheckboxGroup extends React.Component {
         const { references } = this.state;
 
         Object.keys(references).map(cb => {
-            if (cb !== 'Alle') {
+            if (cb !== 'Merk/fjern alle') {
                 this.props.updateFilterDropdown(cb, checked);
                 references[cb].current.setChecked(checked);
                 this.setState({

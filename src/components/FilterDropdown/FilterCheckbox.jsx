@@ -47,7 +47,7 @@ class FilterCheckbox extends React.Component {
             checked: event.target.checked
         })
 
-        if (event.target.value === 'Alle') {
+        if (event.target.value === 'Merk/fjern alle') {
             this.props.checkAll(event.target.checked)
         } else {
             this.props.checkboxGotUpdated(this.props.value, event.target.checked);
@@ -59,9 +59,9 @@ class FilterCheckbox extends React.Component {
     }
 
     render() {
-        const { classes, value } = this.props;
+        const { classes, label, value } = this.props;
         return (
-            <FormControlLabel className={value === 'Alle' ? classes.allCheckbox: classes.checkbox}
+            <FormControlLabel className={value === 'Merk/fjern alle' ? classes.allCheckbox: classes.checkbox}
                 label={
                     <Typography className={classes.checkbox}>
                         {value}
