@@ -76,6 +76,7 @@ class FigureBox extends React.Component {
         this.removeFigureBox = this.removeFigureBox.bind(this);
         this.changeFigureTitle = this.changeFigureTitle.bind(this);
         this.changeFigureGrouping = this.changeFigureGrouping.bind(this);
+
         this.handleClose = this.handleClose.bind(this);
         this.handleOpen = this.handleOpen.bind(this);
         this.handleInput = this.handleInput.bind(this);
@@ -128,7 +129,7 @@ class FigureBox extends React.Component {
         }
         
         //Set categories
-        if (years.length === 1) {
+        if (years.length === 1 && measures.length !== 1) {
             // Group on regions
             result.categories = Object.keys(data).map(regionNumber => {
                 return regionInfo.find(r => parseInt(r.code) === parseInt(regionNumber)).name;

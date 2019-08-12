@@ -59,13 +59,11 @@ class Sidebar extends React.Component {
             chosenFilters: [],
             filterDropdowns: [],
             references: [],
-            filterChosen: false,
         }
 
         this.filterGotChosen = this.filterGotChosen.bind(this);
         this.filterGotRemoved = this.filterGotRemoved.bind(this);
         this.handleInput = this.handleInput.bind(this);
-        this.unMountChosenFilterbox = this.unMountChosenFilterbox.bind(this);
 
         //this.chosenFilterboxElement = React.createRef();
     }
@@ -118,16 +116,6 @@ class Sidebar extends React.Component {
     filterGotChosen(groupName, filterName, checked) {
         if (checked) {
             console.log('Filter ' + filterName + ' in group ' + groupName + ' got checked');
-
-            if (!this.state.filterChosen) {
-                this.setState({filterChosen: !this.state.filterChosen},
-                    () => {
-                        //this.state.references.vfilter.current.addFilter(groupName, filterName);
-                    }
-                );
-            } else {
-                //this.state.references.vfilter.current.addFilter(groupName, filterName);
-            }
             
             if (groupName === 'Region') {
                 var regionInfoObj = regionInfo.find(r => r.name === filterName);
@@ -140,9 +128,6 @@ class Sidebar extends React.Component {
         } else {
             console.log('Filter ' + filterName + ' in group ' + groupName + ' got unchecked');
             this.props.removeActiveFilters(groupName, filterName, checked);
-            //if(this.state.references.vfilter.current.removeFilter(groupName, filterName))
-            //    console.log('heu');
-
         }
     }
 
@@ -158,61 +143,47 @@ class Sidebar extends React.Component {
         })
     }
 
-    resetAllFilters() {
+    disableCheckboxes(groupName, checkboxName) {
+        const { references } = this.state;
 
+        references[groupName].current.disableAllButOne(groupName, checkboxName);
     }
 
-    unMountChosenFilterbox() {
-        this.setState({filterChosen: false});
+    removeDisabling(groupName) {
+        const { references } = this.state;
+
+        references[groupName].current.removeDisabling();
     }
 
     render() {
         const { classes } = this.props;
         return (
-            <Box className={classes.root}>
-                <Button 
-                    className={classes.addFigureButton} 
-                    onClick={this.props.createFigureBox}
-                    p={0}
-                >
-                    <Plus className='button'/>Generer figur
-                </Button>
-                <TextField 
-                    className={classes.searchfield} 
-                    type='text' 
-                    placeholder='Søk etter filter' 
-                    onChange={this.handleInput}
-                />
-                <Drawer
-                    className={classes.drawer}
-                    variant="permanent"
-                    classes={{
-                        paper: classes.drawerPaper,
-                    }}
-                    anchor="left"
-                >
-                    {this.state.filterDropdowns}
-                </Drawer>
+                <Box className={classes.root}>
+                    <Button 
+                        className={classes.addFigureButton} 
+                        onClick={this.props.createFigureBox}
+                        p={0}
+                    >
+                        <Plus className='button'/>Generer figur
+                    </Button>
+                    <TextField 
+                        className={classes.searchfield} 
+                        type='text' 
+                        placeholder='Søk etter filter' 
+                        onChange={this.handleInput}
+                    />
+                    <Drawer
+                        className={classes.drawer}
+                        variant="permanent"
+                        classes={{
+                            paper: classes.drawerPaper,
+                        }}
+                        anchor="left"
+                    >
+                        {this.state.filterDropdowns}
+                    </Drawer>
             </Box>
-            /*
-            <div className={classes.root}>
-                
-                <Button className={classes.addFigureButton} onClick={this.props.createFigureBox}><Plus className='button' />Generer figur</Button>
-                <Paper className={classes.searchfieldPaper}>
-                    <input className={classes.searchfield} type='text' placeholder='Søk etter filter' onChange={this.handleInput}/>
-                </Paper>
-                <Drawer
-                    className={classes.drawer}
-                    variant="permanent"
-                    classes={{
-                        paper: classes.drawerPaper,
-                    }}
-                    anchor="left"
-                >
-                    {this.state.filterDropdowns}
-                </Drawer>
-            </div>*/
-      )
+        )
     }
 }
 

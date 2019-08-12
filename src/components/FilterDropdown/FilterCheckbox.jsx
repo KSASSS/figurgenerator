@@ -22,6 +22,7 @@ class FilterCheckbox extends React.Component {
 
         this.state = {
             checked: false,
+            disabled: false,
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -58,6 +59,12 @@ class FilterCheckbox extends React.Component {
         return this.state.checked;
     }
 
+    toggleDisabled() {
+        this.setState({
+            disabled: !this.state.disabled
+        });
+    }
+
     render() {
         const { classes, label, value } = this.props;
         return (
@@ -72,6 +79,7 @@ class FilterCheckbox extends React.Component {
                         value={value}
                         onChange={this.handleChange}
                         checked={this.state.checked}
+                        disabled={this.state.disabled}
                     />
                 }
             />

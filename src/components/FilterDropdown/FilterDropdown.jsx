@@ -61,6 +61,14 @@ class FilterDropdown extends React.Component {
     this.checkBoxList.current.updateAlternatives(input);
   }
 
+  disableAllButOne(groupName, checkboxName) {
+    this.checkBoxList.current.disableAllButOne(groupName, checkboxName);
+  }
+
+  removeDisabling() {
+    this.checkBoxList.current.removeDisabling();
+  }
+
   render() {
     const { classes } = this.props;
     return (

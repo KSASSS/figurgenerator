@@ -96,11 +96,12 @@ export default class Figure extends React.Component {
 
         // Already swapped, set series and categories back to original values
         if (swapped) {
+            console.log('Already swapped, set figure back to original state');
             var options = {
                 xAxis: {
-                    categories: categories
+                    categories: this.props.categories
                 },
-                series: series
+                series: this.props.series
             }
 
             this.figureRef.current.chart.update(options, true, true);
@@ -110,6 +111,7 @@ export default class Figure extends React.Component {
             return;
         }
         
+        console.log('Not swapped, change grouping and data');
         var newSeries = [];
         var newCategory = [];
         series.map((item, idx) => {
