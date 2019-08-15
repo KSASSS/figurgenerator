@@ -72,7 +72,9 @@ class FilterDropdown extends React.Component {
   render() {
     const { classes } = this.props;
     return (
+      /*{this.props.title === 'Indikator' ? <Button/> : null}*/
       <div className='filterdropdown'>
+        
         <ExpansionPanel defaultExpanded={false}>
           <ExpansionPanelSummary
             expandIcon={<ExpandMoreIcon />}

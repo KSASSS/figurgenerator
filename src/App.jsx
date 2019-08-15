@@ -41,7 +41,7 @@ class App extends React.Component {
         this.state = {
             figureGrid: {},
             sideBar: {},
-            activeFilters: [],
+            activeFilters: {},
             disabled: false,
             disabledGroupName: '',
             uniqueFilterName: '',
@@ -182,9 +182,6 @@ class App extends React.Component {
                     disabled = false;
                 }
             }
-            /**
-             * Ta vekk disabled hvis det nå er < 2 grupper med >= 2 checkboxer
-             */
 
             this.setState({
                 activeFilters: actTmp,

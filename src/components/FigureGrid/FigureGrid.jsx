@@ -36,16 +36,19 @@ class FigureGrid extends React.Component {
 
     addFigureBox(activeFilters) {
         const { figureBoxes, figureCounter } = this.state;
-
+        var newAF = JSON.parse(JSON.stringify(activeFilters));
         console.log('Adding a new figurebox with id figure' + figureCounter);
-        
+        console.log(newAF);
+        console.log(JSON.stringify(activeFilters));
+        console.log(JSON.parse(JSON.stringify(activeFilters)));
+        console.log(activeFilters);
         var title = '';
-        if (activeFilters.Indikator.length === 1){
-            title = activeFilters.Indikator[0];
-        } else if (activeFilters.Region.length === 1) {
-            title = regionInfo.find(r => r.code === activeFilters.Region[0]).name;
+        if (newAF.Indikator.length === 1){
+            title = newAF.Indikator[0];
+        } else if (newAF.Region.length === 1) {
+            title = regionInfo.find(r => r.code === newAF.Region[0]).name;
         } else {
-            title = activeFilters.År[0];
+            title = newAF.År[0];
         }
 
         var tmpFigBox = figureBoxes;
@@ -57,9 +60,9 @@ class FigureGrid extends React.Component {
                     id={'figure' + figureCounter}
                     number={figureCounter}
                     title={title} 
-                    regions={activeFilters.Region}
-                    years={activeFilters.År}
-                    measures={activeFilters.Indikator}
+                    regions={newAF.Region}
+                    years={newAF.År}
+                    measures={newAF.Indikator}
                     removeFigureBox={this.removeFigureBox}
                 />
         }
