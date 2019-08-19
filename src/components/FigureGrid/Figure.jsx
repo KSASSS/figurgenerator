@@ -111,12 +111,12 @@ export default class Figure extends React.Component {
                 chartOptions: options
             });
 
-            //return;
-        } else {
+            return;
+        } 
             console.log('Not swapped, change grouping and data');
             const newSeries = []
             
-            const categoriesPromise = categories.map(category => {
+            categories.map(category => {
                 newSeries.push({
                     name: category,
                     data: []
@@ -124,14 +124,14 @@ export default class Figure extends React.Component {
             });
 
             const newCategory = [];
-            const seriesPromise = series.map((item) => {
+            series.map((item) => {
                 newCategory.push(item.name);
                 item.data.map((value, idx) => {
                     newSeries[idx].data.push(value);
                 })
             });
 
-            Promise.all([categoriesPromise, seriesPromise]).then(res => {
+            
                 var options = {
                     series: newSeries,
                     xAxis: {
@@ -143,8 +143,8 @@ export default class Figure extends React.Component {
                     swapped: !this.state.swapped,
                     chartOptions: options
                 });
-            })
-        }
+            
+        
     }
 
     render() {

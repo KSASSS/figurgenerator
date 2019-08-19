@@ -60,7 +60,7 @@ class FigureGrid extends React.Component {
                     id={'figure' + figureCounter}
                     number={figureCounter}
                     title={title} 
-                    regions={newAF.Region}
+                    regions={newAF.Kommune}
                     years={newAF.År}
                     measures={newAF.Indikator}
                     removeFigureBox={this.removeFigureBox}

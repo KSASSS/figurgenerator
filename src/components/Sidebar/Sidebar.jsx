@@ -89,8 +89,8 @@ class Sidebar extends React.Component {
                 return item.name;
             })
 
-            this.createRef("Region");
-            tmpArr.push(<FilterDropdown key='region' ref={this.getRef('Region')} updateSidebar={this.filterGotChosen} title='Region' values={regions}/>);
+            this.createRef("Kommune");
+            tmpArr.push(<FilterDropdown key='kommune' ref={this.getRef('Kommune')} updateSidebar={this.filterGotChosen} title='Kommune' values={regions}/>);
 
             this.createRef("År");
             tmpArr.push(<FilterDropdown key='år' ref={this.getRef('År')} updateSidebar={this.filterGotChosen} title='År' values={validYears}/>);
@@ -117,7 +117,7 @@ class Sidebar extends React.Component {
         if (checked) {
             console.log('Filter ' + filterName + ' in group ' + groupName + ' got checked');
             
-            if (groupName === 'Region') {
+            if (groupName === 'Kommune') {
                 var regionInfoObj = regionInfo.find(r => r.name === filterName);
 
                 this.props.addActiveFilters(groupName, regionInfoObj.code, checked);

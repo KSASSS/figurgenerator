@@ -170,7 +170,7 @@ class FilterCheckboxGroup extends React.Component {
         const { references } = this.state;
 
         Object.keys(references).map(cb => {
-            if (groupName === 'Region') {
+            if (groupName === 'Kommune') {
                 if (cb !== regionInfo.find(r => r.code === checkboxName).name) {
                     references[cb].current.toggleDisabled()
                 }

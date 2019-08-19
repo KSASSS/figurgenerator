@@ -1,6 +1,10 @@
+/** ASSS data */
 export const indikatorURL = 'https://statistikk-test.ks.no/api/ConnectionInfo/Validmeasures?initialCatalog=ASSS%20data&cube=ASSS%20database';
-
 export const figureBaseUrl = 'https://statistikk-test.ks.no/api/RegionInfo/DynamicData?initialCatalog=ASSS%20data&cube=ASSS%20database'
+
+/** Kartdata */
+//export const indikatorURL = 'https://statistikk-test.ks.no/api/ConnectionInfo/Validmeasures?'
+//export const figureBaseUrl = 'https://statistikk-test.ks.no/api/RegionInfo/DynamicData?'
 
 export const getMethod = {
     method: 'GET',
