@@ -76,6 +76,7 @@ class FigureBox extends React.Component {
         this.removeFigureBox = this.removeFigureBox.bind(this);
         this.changeFigureTitle = this.changeFigureTitle.bind(this);
         this.changeFigureGrouping = this.changeFigureGrouping.bind(this);
+
         this.handleClose = this.handleClose.bind(this);
         this.handleOpen = this.handleOpen.bind(this);
         this.handleInput = this.handleInput.bind(this);
@@ -83,9 +84,11 @@ class FigureBox extends React.Component {
     }
 
     componentDidMount() {
-        const { measures, number, regions, title} = this.props;
+        const { number, title} = this.props;
 
         var url = this.createUrl();
+        
+        console.log(url);
 
         fetch(url, getMethod)
         .then(response => {
@@ -121,6 +124,7 @@ class FigureBox extends React.Component {
 
     createCategoryAndSeriesData(data) {
         const { measures, regions, years} = this.props;
+        console.log('createCategoryAndSeriesData');
 
         var result = {
             series: [],
@@ -128,7 +132,7 @@ class FigureBox extends React.Component {
         }
         
         //Set categories
-        if (years.length === 1) {
+        if (years.length === 1 && measures.length !== 1) {
             // Group on regions
             result.categories = Object.keys(data).map(regionNumber => {
                 return regionInfo.find(r => parseInt(r.code) === parseInt(regionNumber)).name;
@@ -142,19 +146,19 @@ class FigureBox extends React.Component {
         //Set series
         Object.keys(data).map(regionNumber => {
             var regionName = regionInfo.find(r => parseInt(r.code) === parseInt(regionNumber)).name;
+
             Object.keys(data[regionNumber].Data).map(measureName => {
                 var seriesPoint = regionsAsColumns ? result.series.find(s => s.name === regionName): result.series.find(s => s.name === measureName);
                 if (seriesPoint === undefined) {
                     result.series.push({
                         name: regionsAsColumns ? regionName: measureName,
                         data: data[regionNumber].Data[measureName]
-                    })
+                    });
                 } else {
                     seriesPoint.data.push(data[regionNumber].Data[measureName][0]);
                 }
             });
         });
-        
         return result;
     }
 
@@ -170,7 +174,7 @@ class FigureBox extends React.Component {
             return newName;
         });
 
-        var datasetsQuery = '?datasett=' + urlMeasures.sort();
+        var datasetsQuery = '&datasett=' + urlMeasures.sort();
         var yearsQuery = '&årstall=' + years.sort();
         var regionsQuery = '&regioner=' + regions.sort();
 
@@ -222,7 +226,7 @@ class FigureBox extends React.Component {
         this.handleClose();
     }
 
-    changeFigureGrouping(event) {
+    changeFigureGrouping() {
         this.figureElement.current.swapGrouping();
     }
 
@@ -250,8 +254,7 @@ class FigureBox extends React.Component {
         return(
             fetched ? 
             <div className={classes.root}>
-                <Paper className={classes.paper}>
-                       
+                <Paper className={classes.paper}>                     
                     <InputLabel ref={this.inputLabel} htmlFor="outlined-age-simple">
                         Figurtype
                     </InputLabel>

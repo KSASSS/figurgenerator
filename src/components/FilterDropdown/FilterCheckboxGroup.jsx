@@ -13,6 +13,8 @@ import FilterCheckbox from 'components/FilterDropdown/FilterCheckbox.jsx';
 
 import { withStyles } from '@material-ui/styles';
 
+import { regionInfo } from 'constants'
+
 const styles = theme => ({
     root: {
         display: 'flex',
@@ -161,6 +163,32 @@ class FilterCheckboxGroup extends React.Component {
                     [cb]: checked
                 })
             }
+        });
+    }
+
+    disableAllButOne(groupName, checkboxName) {
+        const { references } = this.state;
+
+        Object.keys(references).map(cb => {
+            if (groupName === 'Kommune') {
+                if (cb !== regionInfo.find(r => r.code === checkboxName).name) {
+                    references[cb].current.toggleDisabled()
+                }
+            } else {
+                if (cb !== checkboxName) {
+                    references[cb].current.toggleDisabled()
+                }
+            }
+        })
+    }
+
+    removeDisabling() {
+        const { references } = this.state;
+
+        Object.keys(references).map(cb => {
+            if (references[cb].current.state.disabled)
+                references[cb].current.toggleDisabled();
+            
         });
     }
 

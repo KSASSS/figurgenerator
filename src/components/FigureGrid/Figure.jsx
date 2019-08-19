@@ -23,7 +23,12 @@ export default class Figure extends React.Component {
             pieData: [],
             title: '',
             swapped: false,
+            chartOptions: {},
+            series: {},
+            categories: [],
         }
+
+        this.swapGrouping = this.swapGrouping.bind(this);
 
         this.figureRef = React.createRef();
     }
@@ -38,6 +43,9 @@ export default class Figure extends React.Component {
         options.xAxis.categories = categories;
         options.series = series;
 
+        var newCats = JSON.parse(JSON.stringify(categories));
+        var newSeries = JSON.parse(JSON.stringify(series));
+
         //Enable hamburgermenu in chart
         HC_exporting(Highcharts);
 
@@ -47,21 +55,12 @@ export default class Figure extends React.Component {
                 numericSymbols: null //otherwise by default ['k', 'M', 'G', 'T', 'P', 'E']
             },
         })
-            
-        var figureArr = [];
-        figureArr.push(
-            <HighchartsReact
-                highcharts={Highcharts}
-                ref={this.figureRef}
-                options={options}
-            />
-        );
 
-        this.setState({
-            figure: figureArr,
-            type: figureType,
-            title: title,
-        });
+       this.setState({
+           chartOptions: options,
+           series: newSeries,
+           categories: newCats
+       });
     }
 
     changeFigureType(figureType) {
@@ -91,57 +90,75 @@ export default class Figure extends React.Component {
 
     swapGrouping() {
         console.log('Swapping grouping');
-        const { swapped } = this.state;
-        const { categories, series } = this.props;
+        //const {  } = this.props;
+        const { categories, series, swapped } = this.state;
+        //const { categories, series } = this.props;
 
         // Already swapped, set series and categories back to original values
         if (swapped) {
+            console.log('Already swapped, set figure back to original state');
+            
             var options = {
                 xAxis: {
-                    categories: categories
+                    categories: JSON.parse(JSON.stringify(categories))
                 },
-                series: series
-            }
+                series: JSON.parse(JSON.stringify(series))
+            };
 
-            this.figureRef.current.chart.update(options, true, true);
+            
             this.setState({
-                swapped: !swapped
+                swapped: !this.state.swapped,
+                chartOptions: options
             });
+
             return;
-        }
-        
-        var newSeries = [];
-        var newCategory = [];
-        series.map((item, idx) => {
-            newCategory.push(item.name);
-            item.data.map((value, idx) => {
-                if (newSeries[idx] === undefined) {
-                    newSeries[idx] = {
-                        name: categories[idx],
-                        data: [value]
-                    };
-                } else {
+        } 
+            console.log('Not swapped, change grouping and data');
+            const newSeries = []
+            
+            categories.map(category => {
+                newSeries.push({
+                    name: category,
+                    data: []
+                });
+            });
+
+            const newCategory = [];
+            series.map((item) => {
+                newCategory.push(item.name);
+                item.data.map((value, idx) => {
                     newSeries[idx].data.push(value);
+                })
+            });
+
+            
+                var options = {
+                    series: newSeries,
+                    xAxis: {
+                        categories: newCategory
+                    }
                 }
-            })
-        });
 
-        var options = {
-            series: newSeries,
-            xAxis: {
-                categories: newCategory
-            }
-        }
-
-        this.figureRef.current.chart.update(options, true, true);
-        this.setState({
-            swapped: !swapped
-        });
+                this.setState({
+                    swapped: !this.state.swapped,
+                    chartOptions: options
+                });
+            
+        
     }
 
     render() {
+        const { title } = this.props;
+        const { chartOptions } = this.state;
+        
         return(
-            this.state.figure
+            <HighchartsReact
+                key={'figure' + title}
+                highcharts={Highcharts}
+                ref={this.figureRef}
+                options={chartOptions}
+                allowChartUpdate={true}
+            />
         );
     }
 }
