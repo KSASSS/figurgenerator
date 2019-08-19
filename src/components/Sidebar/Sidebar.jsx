@@ -120,14 +120,14 @@ class Sidebar extends React.Component {
             if (groupName === 'Kommune') {
                 var regionInfoObj = regionInfo.find(r => r.name === filterName);
 
-                this.props.addActiveFilters(groupName, regionInfoObj.code, checked);
+                this.props.addActiveFilters(groupName, regionInfoObj.code);
             } else {
-                this.props.addActiveFilters(groupName, filterName, checked);
+                this.props.addActiveFilters(groupName, filterName);
             }
             
         } else {
             console.log('Filter ' + filterName + ' in group ' + groupName + ' got unchecked');
-            this.props.removeActiveFilters(groupName, filterName, checked);
+            this.props.removeActiveFilters(groupName, filterName);
         }
     }
 

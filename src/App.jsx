@@ -55,15 +55,17 @@ class App extends React.Component {
         this.sidebarRef = React.createRef();
     }
 
-    addActiveFilters(groupName, filterName, checked) {
-        const { activeFilters } = this.state;
+    addActiveFilters(groupName, filterName) {
+        const { activeFilters, disabledGroupName, uniqueFilterName } = this.state;
 
         console.log('Adding active filters to App');
         var filterGroup = activeFilters[groupName];
         var filterCount = 0;
         var disabled = this.state.disabled;
-        var disabledGroupName = this.state.disabledGroupName;
-        var uniqueFilterName = this.state.uniqueFilterName;
+
+        // Variables used to avoid async problems with setState
+        var disabledGroup = disabledGroupName;
+        var uniqueFilter = uniqueFilterName;
 
         var actTmp = activeFilters;
 
@@ -82,18 +84,23 @@ class App extends React.Component {
                 if (filterCount === 2) {
                     this.sidebarRef.current.disableCheckboxes(groupName, filterName);
                     disabled = true;
-                    disabledGroupName = groupName;
-                    uniqueFilterName = filterName;
+                    disabledGroup = groupName;
+                    uniqueFilter = filterName;
                 }
             }
 
             this.setState({
                 activeFilters: actTmp,
                 disabled: disabled,
-                disabledGroupName: disabledGroupName,
-                uniqueFilterName: uniqueFilterName
+                disabledGroupName: disabledGroup,
+                uniqueFilterName: uniqueFilter
             });
         } else {
+            // Filter is already added, should just stop
+            // Occurs when alle button is pushed and the filter is already
+            if (actTmp[groupName].includes(filterName))
+                return;
+
             actTmp[groupName].push(filterName);
 
             // Count filtergroups with 2 or more checked filters and also find the unique filter
@@ -102,15 +109,15 @@ class App extends React.Component {
                     if (actTmp[item].length >= 2) {
                         filterCount++;
                     } else {
-                        disabledGroupName = item;
-                        uniqueFilterName = actTmp[item][0];
+                        disabledGroup = item;
+                        uniqueFilter = actTmp[item][0];
                     }
                 })
 
                 // Two filtergroups have two or more checked filters, disable unchecked ones in the 
                 // filtergroup with only one checked
                 if (filterCount === 2 && !disabled) {
-                    this.sidebarRef.current.disableCheckboxes(disabledGroupName, uniqueFilterName);
+                    this.sidebarRef.current.disableCheckboxes(disabledGroup, uniqueFilter);
                     disabled = true;
                 }
             }
@@ -118,8 +125,8 @@ class App extends React.Component {
             this.setState({
                 activeFilters: actTmp,
                 disabled: disabled,
-                disabledGroupName: disabledGroupName,
-                uniqueFilterName: uniqueFilterName
+                disabledGroupName: disabledGroup,
+                uniqueFilterName: uniqueFilter
             })
         }
     }
@@ -140,7 +147,7 @@ class App extends React.Component {
         var filterGroup = this.state.activeFilters[groupName];
         var disabled = this.state.disabled;
 
-        if (groupName === 'Region') {
+        if (groupName === 'Kommune') {
             var regionCode = regionInfo.find(r => r.name === filterName).code;
             filterGroup = filterGroup.filter(filterItem => filterItem !== regionCode);
         } else {
