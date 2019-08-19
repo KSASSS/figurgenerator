@@ -63,7 +63,7 @@ class Sidebar extends React.Component {
 
         this.filterGotChosen = this.filterGotChosen.bind(this);
         this.filterGotRemoved = this.filterGotRemoved.bind(this);
-        this.handleInput = this.handleInput.bind(this);
+        //this.handleInput = this.handleInput.bind(this);
 
         //this.chosenFilterboxElement = React.createRef();
     }
@@ -96,7 +96,7 @@ class Sidebar extends React.Component {
             tmpArr.push(<FilterDropdown key='år' ref={this.getRef('År')} updateSidebar={this.filterGotChosen} title='År' values={validYears}/>);
 
             this.createRef("Indikator");
-            tmpArr.push(<FilterDropdown key='indikator' ref={this.getRef('Indikator')} updateSidebar={this.filterGotChosen} title='Indikator' values={this.state.indikatorer}/>);
+            tmpArr.push(<FilterDropdown key='indikator' searchAble ref={this.getRef('Indikator')} updateSidebar={this.filterGotChosen} title='Indikator' values={this.state.indikatorer}/>);
 
             this.setState({filterDropdowns: tmpArr})
         })
@@ -137,12 +137,6 @@ class Sidebar extends React.Component {
         this.props.removeActiveFilters(groupName, filterName, checked);
     }
 
-    handleInput() {
-        Object.keys(this.state.references).map(fdd => {
-            this.state.references[fdd].current.searchForFilter(event.target.value);
-        })
-    }
-
     disableCheckboxes(groupName, checkboxName) {
         const { references } = this.state;
 
@@ -158,6 +152,14 @@ class Sidebar extends React.Component {
     render() {
         const { classes } = this.props;
         return (
+            /**
+             * <TextField 
+                        className={classes.searchfield} 
+                        type='text' 
+                        placeholder='Søk etter filter' 
+                        onChange={this.handleInput}
+                    />
+             */
                 <Box className={classes.root}>
                     <Button 
                         className={classes.addFigureButton} 
@@ -166,12 +168,6 @@ class Sidebar extends React.Component {
                     >
                         <Plus className='button'/>Generer figur
                     </Button>
-                    <TextField 
-                        className={classes.searchfield} 
-                        type='text' 
-                        placeholder='Søk etter filter' 
-                        onChange={this.handleInput}
-                    />
                     <Drawer
                         className={classes.drawer}
                         variant="permanent"

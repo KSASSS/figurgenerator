@@ -11,8 +11,11 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 /* Brukes som tittel på dropdownsmenyene */
 import Typography from "@material-ui/core/Typography";
 
+import TextField from '@material-ui/core/TextField';
+
 import FilterCheckboxGroup from 'components/FilterDropdown/FilterCheckboxGroup.jsx';
 
+import { drawerWidth } from 'constants'
 
 const styles = theme => ({
   dropdown: {
@@ -20,6 +23,10 @@ const styles = theme => ({
     overflowY: 'auto',
     maxHeight: 500,
   },
+  searchfield: {
+    width: '80%',
+    paddingLeft: 10,
+  }
 });
 
 class FilterDropdown extends React.Component {
@@ -34,12 +41,14 @@ class FilterDropdown extends React.Component {
 
     this.filterGotChosen = this.filterGotChosen.bind(this);
     this.searchForFilter = this.searchForFilter.bind(this);
-    this.checkBoxList = React.createRef();
+    this.handleInput = this.handleInput.bind(this);
+
+    this.checkboxReferences = React.createRef();
   }
 
   componentDidMount() {
     var tmpArr = [
-      <FilterCheckboxGroup key={this.props.title} updateFilterDropdown={this.filterGotChosen} groupTitle={this.props.title} values={this.props.values} ref={this.checkBoxList}/>
+      <FilterCheckboxGroup key={this.props.title} updateFilterDropdown={this.filterGotChosen} groupTitle={this.props.title} values={this.props.values} ref={this.checkboxReferences}/>
     ]
 
     this.setState({
@@ -53,24 +62,28 @@ class FilterDropdown extends React.Component {
 
   updateCheckbox(name) {
     console.log('updateCheckbox');
-    this.checkBoxList.current.changeCheckedState(name);
+    this.checkboxReferences.current.changeCheckedState(name);
   }
 
   searchForFilter(input) {
     console.log('searchForFilter');
-    this.checkBoxList.current.updateAlternatives(input);
+    this.checkboxReferences.current.updateAlternatives(input);
   }
 
   disableAllButOne(groupName, checkboxName) {
-    this.checkBoxList.current.disableAllButOne(groupName, checkboxName);
+    this.checkboxReferences.current.disableAllButOne(groupName, checkboxName);
   }
 
   removeDisabling() {
-    this.checkBoxList.current.removeDisabling();
+    this.checkboxReferences.current.removeDisabling();
+  }
+
+  handleInput() {
+    this.checkboxReferences.current.searchForFilter(event.target.value);
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, searchAble } = this.props;
     return (
       /*{this.props.title === 'Indikator' ? <Button/> : null}*/
       <div className='filterdropdown'>
@@ -83,7 +96,16 @@ class FilterDropdown extends React.Component {
           >
             <Typography>{this.props.title}</Typography>
           </ExpansionPanelSummary>
-             
+          {searchAble ?
+            <TextField 
+              className={classes.searchfield} 
+              type='text' 
+              placeholder='Søk etter filter' 
+              onChange={this.handleInput}
+            />
+            : 
+            null
+          }
           <ExpansionPanelDetails className={classes.dropdown}>
             {this.state.checkboxList}
           </ExpansionPanelDetails>

@@ -37,10 +37,12 @@ class FilterCheckboxGroup extends React.Component {
             filteredReferences: [],
             references: [],
             checkedAlternatives: [],
+            filteredAlternatives: [],
         }
 
         this.checkboxGotUpdated = this.checkboxGotUpdated.bind(this);
-        this.updateAlternatives = this.updateAlternatives.bind(this);
+        this.searchForFilter = this.searchForFilter.bind(this);
+        //this.updateAlternatives = this.updateAlternatives.bind(this);
         this.createAndReturnRef = this.createAndReturnRef.bind(this);
         this.checkAll = this.checkAll.bind(this);
     }
@@ -85,9 +87,15 @@ class FilterCheckboxGroup extends React.Component {
 
 
     checkboxGotUpdated(name, checked) {
+        const { checkedAlternatives } = this.state;
+
         this.props.updateFilterDropdown(name, checked);
+
+        var checkedTmp = checkedAlternatives;
+        checkedTmp[name] = checked;
+
         this.setState({
-            [name]: checked
+            checkedAlternatives: checkedTmp
         })
     }
 
@@ -114,53 +122,29 @@ class FilterCheckboxGroup extends React.Component {
         }
     }
 
-    updateAlternatives(input) {
-        if (input === '') {
-
-            this.setState({
-                filtered: false
-            }, () => {
-                this.state.alternatives.map(alts => {
-                    this.state.references[alts.props.value].current.setChecked(this.state[alts.props.value]);
-                });
-            });
-            return;
-        }
-        
-        var tmp = this.state.alternatives.map(alts => {
-            if (alts.props.value.toLowerCase().match(input) !== null) {
-                return (
-                    <FilterCheckbox 
-                        value={alts.props.value} 
-                        defaultCheckValue={this.state[alts.props.value]} 
-                        checkboxGotUpdated={this.checkboxGotUpdated} 
-                        ref={this.createAndReturnRef(alts.props.value, true)}
-                    />
-                )
-            }
-        });
-
-        this.setState({
-            filtered: true,
-            filteredAlternatives: tmp,
-        });
-    }
-
     checkAll(checked) {
         console.log('Changed checked value of all to ' + checked);
-        const { references } = this.state;
+        const { checkedAlternatives, references } = this.state;
 
         Object.keys(references).map(cb => {
             if (cb !== 'Merk/fjern alle') {
                 this.props.updateFilterDropdown(cb, checked);
                 references[cb].current.setChecked(checked);
+
+                var checkedTmp = checkedAlternatives;
+                checkedTmp[cb] = checked;
+
                 this.setState({
-                    [cb]: checked
+                    checkedAlternatives: checkedTmp
                 })
             } else {
                 references[cb].current.setChecked(checked);
+
+                var checkedTmp = checkedAlternatives;
+                checkedTmp[cb] = checked;
+
                 this.setState({
-                    [cb]: checked
+                    checkedAlternatives: checkedTmp
                 })
             }
         });
@@ -190,6 +174,86 @@ class FilterCheckboxGroup extends React.Component {
                 references[cb].current.toggleDisabled();
             
         });
+    }
+    /*
+    updateAlternatives(input) {
+        const { checkedAlternatives } = this.state;
+
+        if (input === '') {
+
+            this.setState({
+                filtered: false
+            }, () => {
+                this.state.alternatives.map(alts => {
+                    this.state.references[alts.props.value].current.setChecked(checkedAlternatives[alts.props.value]);
+                });
+            });
+            return;
+        }
+        
+        var tmp = this.state.alternatives.map(alts => {
+            if (alts.props.value.toLowerCase().match(input) !== null) {
+                return (
+                    <FilterCheckbox 
+                        value={alts.props.value} 
+                        defaultCheckValue={this.state[alts.props.value]} 
+                        checkboxGotUpdated={this.checkboxGotUpdated} 
+                        ref={this.createAndReturnRef(alts.props.value, true)}
+                    />
+                )
+            }
+        });
+
+        this.setState({
+            filtered: true,
+            filteredAlternatives: tmp,
+        });
+    }
+    */
+    searchForFilter(input) {
+        const { alternatives, checkedAlternatives, filtered, references } = this.state;
+
+        var tmp = [];
+        alternatives.map(alts => {
+            const { value } = alts.props;
+            if (value.toLowerCase().match(input) !== null) {
+                tmp.push(
+                    <FilterCheckbox
+                        key={'filteredcb ' + value}
+                        value={value} 
+                        defaultCheckValue={checkedAlternatives[value]} 
+                        checkboxGotUpdated={this.checkboxGotUpdated} 
+                        ref={this.createAndReturnRef(value, true)}
+                    />
+                )
+            } 
+        });
+
+        if (input.length >= 3) {
+            console.log(tmp);
+            
+            //show the filtered version
+            this.setState({
+                filteredAlternatives: tmp,
+            }, () => {
+                this.setState({
+                    filtered: true,
+                })
+            });
+            
+        } else {
+            if (filtered) {
+                this.setState({
+                    filtered: false,
+                }, () => {
+                    alternatives.map(alts => {
+                        const { value } = alts.props;
+        
+                        references[value].current.setChecked(checkedAlternatives[value]);
+                    });
+                });
+            }
+        }
     }
 
     render() {

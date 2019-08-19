@@ -30,7 +30,7 @@ class FilterCheckbox extends React.Component {
     }
 
     componentDidMount() {
-        const { defaultCheckValue, value } = this.props;
+        const { defaultCheckValue } = this.props;
         this.setState({
             checked: defaultCheckValue
         });
@@ -43,7 +43,7 @@ class FilterCheckbox extends React.Component {
         });
     }
 
-    handleChange(event) {
+    handleChange() {
         this.setState({
             checked: event.target.checked
         })
@@ -66,7 +66,7 @@ class FilterCheckbox extends React.Component {
     }
 
     render() {
-        const { classes, label, value } = this.props;
+        const { classes, value } = this.props;
         return (
             <FormControlLabel className={value === 'Merk/fjern alle' ? classes.allCheckbox: classes.checkbox}
                 label={
