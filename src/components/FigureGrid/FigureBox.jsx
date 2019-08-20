@@ -12,10 +12,12 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+import Tooltip from '@material-ui/core/Tooltip';
+
 /* Paper import (brukes til å teste grid) */
 import Paper from "@material-ui/core/Paper";
 
-import { Autorenew, Close } from 'mdi-material-ui'
+import { Autorenew, Close, FormatPaint, FormatTitle } from 'mdi-material-ui'
 
 import Figure from './Figure.jsx'
 
@@ -34,14 +36,24 @@ const styles = theme => ({
         
     },
     removeButton: {
-        color: 'red',
-        width: '33%',
+        width: '25%',
     },
     titleButton: {
-        width: '33%',
+        width: '25%',
     },
     swapButton: {
-        width: '33%',
+        width: '25%',
+        /*'&:hover': {
+            color: '#1AE9EF'
+        },*/
+    },
+    colorButton: {
+        width: '25%',
+        //background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
+        /*'&:hover': {
+            
+            //color: 'linear-gradient(to left, #EE82EE, #4B0082, #0000ff, #008000, #ffff00, #ffa500, #ff0000)'
+        },*/
     }
   });
 
@@ -264,9 +276,18 @@ class FigureBox extends React.Component {
                         <MenuItem key='pieItem' disabled value={4}>Pai</MenuItem>
                     </Select>
                     {this.state.figure}
-                    <Button className={classes.titleButton} onClick={this.handleOpen} >Endre tittel</Button>
-                    <Button className={classes.swapButton} onClick={this.changeFigureGrouping}><Autorenew/></Button>
-                    <Button className={classes.removeButton} onClick={this.removeFigureBox}>Fjern figur<Close /></Button>
+                    <Tooltip title="Endre tittel">
+                        <Button className={classes.titleButton} onClick={this.handleOpen}><FormatTitle/></Button>
+                    </Tooltip>
+                    <Tooltip title="Endre gruppering">
+                        <Button className={classes.swapButton} onClick={this.changeFigureGrouping}><Autorenew/></Button>
+                    </Tooltip>
+                    <Tooltip title="Endre fargevalg">
+                        <Button className={classes.colorButton}  onClick={this.changeFigureGrouping}><FormatPaint/></Button>
+                    </Tooltip>
+                    <Tooltip title="Fjern figur">
+                        <Button className={classes.removeButton} onClick={this.removeFigureBox}><Close/></Button>
+                    </Tooltip>
                     <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
                         <DialogTitle id="form-dialog-title">Endre tittel</DialogTitle>
                         <DialogContent>

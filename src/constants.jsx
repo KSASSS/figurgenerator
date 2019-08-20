@@ -90,4 +90,14 @@ export const highchartsOptions = {
 
 export const highchartsPieOptions = {};
 
-export const verbose = true;
+export const figureColors = [
+    '#058DC7', 
+    '#50B432', 
+    '#ED561B', 
+    '#DDDF00', 
+    '#24CBE5', 
+    '#64E572', 
+    '#FF9655', 
+    '#FFF263', 
+    '#6AF9C4'
+];

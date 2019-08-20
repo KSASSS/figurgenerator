@@ -7,7 +7,7 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 
 /* Constants */
-import { highchartsOptions, figureBaseUrl, getMethod, regionInfo } from 'constants'
+import { figureColors, highchartsOptions, figureBaseUrl, getMethod, regionInfo } from 'constants'
 
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
@@ -42,6 +42,7 @@ export default class Figure extends React.Component {
         options.title.text = title;
         options.xAxis.categories = categories;
         options.series = series;
+        options.colors = figureColors;
 
         var newCats = JSON.parse(JSON.stringify(categories));
         var newSeries = JSON.parse(JSON.stringify(series));
@@ -51,10 +52,14 @@ export default class Figure extends React.Component {
 
         //Remove k notation on big numbers
         Highcharts.setOptions({
+            /*column: {
+                colorByPoint: true
+            },
+            colors: figureColors,*/
             lang: {
                 numericSymbols: null //otherwise by default ['k', 'M', 'G', 'T', 'P', 'E']
-            },
-        })
+            }
+        });
 
        this.setState({
            chartOptions: options,
@@ -102,7 +107,8 @@ export default class Figure extends React.Component {
                 xAxis: {
                     categories: JSON.parse(JSON.stringify(categories))
                 },
-                series: JSON.parse(JSON.stringify(series))
+                series: JSON.parse(JSON.stringify(series)),
+                colors: figureColors
             };
 
             
@@ -137,7 +143,8 @@ export default class Figure extends React.Component {
             series: newSeries,
             xAxis: {
                 categories: newCategory
-            }
+            },
+            colors: figureColors
         }
 
         this.setState({
