@@ -2,15 +2,12 @@ import React, {Component} from "react";
 
 /* Constants */
 import { indikatorURL, getMethod, regionInfo, validYears } from 'constants'
-import { Plus, Minus } from 'mdi-material-ui'
+import { Plus } from 'mdi-material-ui'
 
 /* Dropdown imports */
 import FilterDropdown from 'components/FilterDropdown/FilterDropdown.jsx'
 
 import Button from '@material-ui/core/Button';
-import Paper from "@material-ui/core/Paper";
-
-import TextField from '@material-ui/core/TextField';
 
 import Box from '@material-ui/core/Box';
 
@@ -33,7 +30,7 @@ const styles = theme => ({
     drawerPaper: {
         width: drawerWidth,
         height: 'calc(100% - 64px)',
-        top: 96,
+        top: 32,
     },
     addFigureButton: {
         position: 'fixed',

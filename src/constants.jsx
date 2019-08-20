@@ -89,3 +89,5 @@ export const highchartsOptions = {
 };
 
 export const highchartsPieOptions = {};
+
+export const verbose = true;

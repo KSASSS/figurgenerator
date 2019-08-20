@@ -1,13 +1,7 @@
 import React, {Component} from "react";
 
 /* Checkbox imports */
-import FormLabel from "@material-ui/core/FormLabel";
-import FormControl from "@material-ui/core/FormControl";
 import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Checkbox from "@material-ui/core/Checkbox";
-import Button from '@material-ui/core/Button';
 
 import FilterCheckbox from 'components/FilterDropdown/FilterCheckbox.jsx';
 
@@ -36,7 +30,7 @@ class FilterCheckboxGroup extends React.Component {
             alternatives: [],
             filteredReferences: [],
             references: [],
-            checkedAlternatives: [],
+            checkedAlternatives: {},
             filteredAlternatives: [],
         }
 
@@ -62,8 +56,15 @@ class FilterCheckboxGroup extends React.Component {
                 ref={this.createAndReturnRef('Merk/fjern alle', false)}
             />
         ]
+
+        var t = 'Merk/fjern alle'
         
+        var checkedTmp = {
+            [t]: false
+        };
         values.map(item => {
+            checkedTmp[item] = false;
+            //checkedTmp.push()
             alternativesArr.push(
                 <FilterCheckbox
                     key={this.props.groupTitle + item}
@@ -79,8 +80,8 @@ class FilterCheckboxGroup extends React.Component {
         });
 
         this.setState({
-            Alle: false,
-            alternatives: alternativesArr
+            alternatives: alternativesArr,
+            checkedAlternatives: checkedTmp
         });
         
     }
@@ -175,57 +176,15 @@ class FilterCheckboxGroup extends React.Component {
             
         });
     }
-    /*
-    updateAlternatives(input) {
-        const { checkedAlternatives } = this.state;
 
-        if (input === '') {
-
-            this.setState({
-                filtered: false
-            }, () => {
-                this.state.alternatives.map(alts => {
-                    this.state.references[alts.props.value].current.setChecked(checkedAlternatives[alts.props.value]);
-                });
-            });
-            return;
-        }
-        
-        var tmp = this.state.alternatives.map(alts => {
-            if (alts.props.value.toLowerCase().match(input) !== null) {
-                return (
-                    <FilterCheckbox 
-                        value={alts.props.value} 
-                        defaultCheckValue={this.state[alts.props.value]} 
-                        checkboxGotUpdated={this.checkboxGotUpdated} 
-                        ref={this.createAndReturnRef(alts.props.value, true)}
-                    />
-                )
-            }
-        });
-
-        this.setState({
-            filtered: true,
-            filteredAlternatives: tmp,
-        });
-    }
-    */
     searchForFilter(input) {
         const { alternatives, checkedAlternatives, filtered, references } = this.state;
-
+        console.log(checkedAlternatives);
         var tmp = [];
         alternatives.map(alts => {
             const { value } = alts.props;
-            if (value.toLowerCase().match(input) !== null) {
-                tmp.push(
-                    <FilterCheckbox
-                        key={'filteredcb ' + value}
-                        value={value} 
-                        defaultCheckValue={checkedAlternatives[value]} 
-                        checkboxGotUpdated={this.checkboxGotUpdated} 
-                        ref={this.createAndReturnRef(value, true)}
-                    />
-                )
+            if (value.toLowerCase().match(input) !== null && value !== 'Merk/fjern alle') {
+                tmp.push(alts)
             } 
         });
 
@@ -235,10 +194,7 @@ class FilterCheckboxGroup extends React.Component {
             //show the filtered version
             this.setState({
                 filteredAlternatives: tmp,
-            }, () => {
-                this.setState({
-                    filtered: true,
-                })
+                filtered: true,
             });
             
         } else {

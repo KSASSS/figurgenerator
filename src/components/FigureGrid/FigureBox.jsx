@@ -1,23 +1,15 @@
 import React, { Component } from 'react';
 
-/* Grid imports*/
-import Grid from "@material-ui/core/Grid";
-
 import Button from '@material-ui/core/Button';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
-import Input from "@material-ui/core/Input";
-
-import Box from '@material-ui/core/Box';
 
 /* Endre tittel imports */
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 /* Paper import (brukes til å teste grid) */
@@ -69,14 +61,17 @@ class FigureBox extends React.Component {
             fetched: false,
         }
         this.inputLabel = React.createRef(null);
+        this.figureElement = React.createRef();
         this.titleField = React.createRef();
 
-        this.changeFigureType = this.changeFigureType.bind(this);
-        this.figureElement = React.createRef();
-        this.removeFigureBox = this.removeFigureBox.bind(this);
-        this.changeFigureTitle = this.changeFigureTitle.bind(this);
         this.changeFigureGrouping = this.changeFigureGrouping.bind(this);
+        this.changeFigureTitle = this.changeFigureTitle.bind(this);
+        this.changeFigureType = this.changeFigureType.bind(this);
 
+        
+        this.removeFigureBox = this.removeFigureBox.bind(this);
+
+        // Input window functions
         this.handleClose = this.handleClose.bind(this);
         this.handleOpen = this.handleOpen.bind(this);
         this.handleInput = this.handleInput.bind(this);
@@ -124,7 +119,6 @@ class FigureBox extends React.Component {
 
     createCategoryAndSeriesData(data) {
         const { measures, regions, years} = this.props;
-        console.log('createCategoryAndSeriesData');
 
         var result = {
             series: [],
@@ -251,7 +245,7 @@ class FigureBox extends React.Component {
     render() {
         const { figureType, fetched } = this.state;
         const { classes } = this.props;
-        return(
+        return (
             fetched ? 
             <div className={classes.root}>
                 <Paper className={classes.paper}>                     

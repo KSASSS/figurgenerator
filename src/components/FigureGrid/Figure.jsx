@@ -113,38 +113,37 @@ export default class Figure extends React.Component {
 
             return;
         } 
-            console.log('Not swapped, change grouping and data');
-            const newSeries = []
-            
-            categories.map(category => {
-                newSeries.push({
-                    name: category,
-                    data: []
-                });
-            });
-
-            const newCategory = [];
-            series.map((item) => {
-                newCategory.push(item.name);
-                item.data.map((value, idx) => {
-                    newSeries[idx].data.push(value);
-                })
-            });
-
-            
-                var options = {
-                    series: newSeries,
-                    xAxis: {
-                        categories: newCategory
-                    }
-                }
-
-                this.setState({
-                    swapped: !this.state.swapped,
-                    chartOptions: options
-                });
-            
         
+        console.log('Not swapped, change grouping and data');
+        const newSeries = []
+            
+        categories.map(category => {
+            newSeries.push({
+                name: category,
+                data: []
+            });
+        });
+
+        const newCategory = [];
+        series.map((item) => {
+            newCategory.push(item.name);
+            item.data.map((value, idx) => {
+                newSeries[idx].data.push(value);
+            })
+        });
+
+            
+        var options = {
+            series: newSeries,
+            xAxis: {
+                categories: newCategory
+            }
+        }
+
+        this.setState({
+            swapped: !this.state.swapped,
+            chartOptions: options
+        });
     }
 
     render() {

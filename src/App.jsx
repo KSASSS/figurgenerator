@@ -1,12 +1,5 @@
 import React, { Component } from 'react';
 
-/* Grid imports*/
-import Grid from "@material-ui/core/Grid";
-
-/* Paper import (brukes til å teste grid) */
-import Paper from "@material-ui/core/Paper";
-import Drawer from '@material-ui/core/Drawer';
-
 import PropTypes from 'prop-types';
 
 import Box from '@material-ui/core/Box';
@@ -19,9 +12,7 @@ import Sidebar from './components/Sidebar/Sidebar.jsx'
 /* Figurområde imports */
 import FigureGrid from './components/FigureGrid/FigureGrid.jsx'
 
-import { regionInfo, drawerWidth } from 'constants'
-
-//const drawerWidth = 240;
+import { regionInfo } from 'constants'
 
 const styles = theme => ({
     root: {
@@ -29,8 +20,6 @@ const styles = theme => ({
     },
     content: {
       flexGrow: 1,
-      //backgroundColor: theme.palette.background.default,
-      //padding: theme.spacing(3),
     },
   });
 
@@ -39,22 +28,32 @@ class App extends React.Component {
         super(props);
 
         this.state = {
-            figureGrid: {},
-            sideBar: {},
             activeFilters: {},
             disabled: false,
             disabledGroupName: '',
+            figureGrid: {},
+            sideBar: {},
             uniqueFilterName: '',
         }
 
-        this.figureGridElement = React.createRef();
         this.addActiveFilters = this.addActiveFilters.bind(this);
-        this.removeActiveFilters = this.removeActiveFilters.bind(this);
         this.createFigureBox = this.createFigureBox.bind(this);
+        this.figureGridElement = React.createRef();
+        this.removeActiveFilters = this.removeActiveFilters.bind(this);
+        
 
         this.sidebarRef = React.createRef();
     }
 
+    /**
+     * Adds an active filter, a filter that is checked to the list of activefilters
+     * 
+     * If the group the filter is in isn't defined in activeFilters, creates the new one.
+     * Also handles the disabling of checkboxes
+     * 
+     * @param groupName - the name of the filtergroup
+     * @param filterName - the name of the filter, it's value
+     */
     addActiveFilters(groupName, filterName) {
         const { activeFilters, disabledGroupName, uniqueFilterName } = this.state;
 
@@ -74,13 +73,17 @@ class App extends React.Component {
 
             actTmp[groupName] = [filterName];
 
+            // If there has been chosen one of each group, check if there is two with
+            // 2 or more active filters
             if (Object.keys(actTmp).length === 3) {
                 Object.keys(actTmp).map(item => {
                     if (actTmp[item].length >= 2) {
                         filterCount++;
                     }
                 })
-    
+                
+                // There is two groups which have two or more active filters, need to disable
+                // the rest of the checkboxes in this group
                 if (filterCount === 2) {
                     this.sidebarRef.current.disableCheckboxes(groupName, filterName);
                     disabled = true;
@@ -97,7 +100,7 @@ class App extends React.Component {
             });
         } else {
             // Filter is already added, should just stop
-            // Occurs when alle button is pushed and the filter is already
+            // Occurs when alle button is pushed and the filter is already in the list
             if (actTmp[groupName].includes(filterName))
                 return;
 
@@ -131,7 +134,13 @@ class App extends React.Component {
         }
     }
 
+    /** Creates a new figurebox
+     * 
+     * Creates a new figurebox with the activefilters specified.
+     * 
+     */
     createFigureBox() {
+        // There isn't enough active filters to query the API
         if (Object.keys(this.state.activeFilters).length !== 3) {
             alert('Mangler verdi på en eller flere filtergrupper');
             return;
@@ -144,9 +153,13 @@ class App extends React.Component {
     /** When a filter gets unchecked, it gets removed here */
     removeActiveFilters(groupName, filterName, checked) {
         console.log('Removing active filter ' + filterName + ' from App');
-        var filterGroup = this.state.activeFilters[groupName];
-        var disabled = this.state.disabled;
+        const { activeFilters, disabledGroupName } = this.state;
 
+        var filterGroup = activeFilters[groupName];
+        var disabled = this.state.disabled;
+        
+        // Remove the unchecked filter from the activeFilter
+        // Kommune is a special case as the codes are used when querying the API
         if (groupName === 'Kommune') {
             var regionCode = regionInfo.find(r => r.name === filterName).code;
             filterGroup = filterGroup.filter(filterItem => filterItem !== regionCode);
@@ -154,29 +167,27 @@ class App extends React.Component {
             filterGroup = filterGroup.filter(filterItem => filterItem !== filterName);
         }
         
+        var actTmp = activeFilters;
 
-        // Was the last filter in the group, removing the group
+        // Was the last filter in the group, removing the group from activeFilters
         if (filterGroup.length === 0) {
-            var actTmp = this.state.activeFilters;
+            //var actTmp = this.state.activeFilters;
             delete actTmp[groupName];
 
             // If it was the last filter in the group and disabled is true, then this is the disabled group
             if (disabled) {
-                this.sidebarRef.current.removeDisabling(this.state.disabledGroupName);
+                this.sidebarRef.current.removeDisabling(disabledGroupName);
                 disabled = !disabled;
             }
                 
-            
             this.setState({
                 activeFilters: actTmp,
                 disabled: disabled
             })
         } else {
-            var actTmp = this.state.activeFilters;
-            var filterCount = 0;
-
             actTmp[groupName] = filterGroup;
 
+            var filterCount = 0;
             if (Object.keys(actTmp).length === 3) {
                 Object.keys(actTmp).map(item => {
                     if (actTmp[item].length >= 2) {
@@ -184,6 +195,8 @@ class App extends React.Component {
                     }
                 })
 
+                // if the removal of the filter causes it to be less than two groups
+                // with two or more indicators, remove the disabling
                 if (filterCount !== 2) {
                     this.sidebarRef.current.removeDisabling(this.state.disabledGroupName);
                     disabled = false;

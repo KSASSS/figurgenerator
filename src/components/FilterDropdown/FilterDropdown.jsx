@@ -15,8 +15,6 @@ import TextField from '@material-ui/core/TextField';
 
 import FilterCheckboxGroup from 'components/FilterDropdown/FilterCheckboxGroup.jsx';
 
-import { drawerWidth } from 'constants'
-
 const styles = theme => ({
   dropdown: {
     display: 'flex',

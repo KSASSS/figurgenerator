@@ -23,6 +23,7 @@ class FilterCheckbox extends React.Component {
         this.state = {
             checked: false,
             disabled: false,
+            value: '',
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -30,20 +31,24 @@ class FilterCheckbox extends React.Component {
     }
 
     componentDidMount() {
-        const { defaultCheckValue } = this.props;
+        const { defaultCheckValue, value } = this.props;
         this.setState({
-            checked: defaultCheckValue
+            checked: defaultCheckValue,
+            value: value
         });
     }
 
     setChecked(checked) {
-        //console.log('Setting ' + this.props.value + ' checked as ' + checked);
+    console.log('Setting ' + this.props.value + ' checked as ' + checked);
+        
         this.setState({
             checked: checked
         });
     }
 
-    handleChange() {
+    handleChange(event) {
+        const { value } = this.props;
+        console.log('handleChange ' + event.target.value);
         this.setState({
             checked: event.target.checked
         })
@@ -51,22 +56,25 @@ class FilterCheckbox extends React.Component {
         if (event.target.value === 'Merk/fjern alle') {
             this.props.checkAll(event.target.checked)
         } else {
-            this.props.checkboxGotUpdated(this.props.value, event.target.checked);
+            this.props.checkboxGotUpdated(value, event.target.checked);
         }
     }
 
     isChecked() {
+        console.log('isChecked');
         return this.state.checked;
     }
 
     toggleDisabled() {
+        console.log('toggleDisabled');
         this.setState({
             disabled: !this.state.disabled
         });
     }
 
     render() {
-        const { classes, value } = this.props;
+        const { classes/*, value*/ } = this.props;
+        const { checked, disabled, value } = this.state;
         return (
             <FormControlLabel className={value === 'Merk/fjern alle' ? classes.allCheckbox: classes.checkbox}
                 label={
@@ -78,8 +86,8 @@ class FilterCheckbox extends React.Component {
                     <Checkbox
                         value={value}
                         onChange={this.handleChange}
-                        checked={this.state.checked}
-                        disabled={this.state.disabled}
+                        checked={checked}
+                        disabled={disabled}
                     />
                 }
             />
