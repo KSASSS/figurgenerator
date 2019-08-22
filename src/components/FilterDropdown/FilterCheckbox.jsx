@@ -46,6 +46,14 @@ class FilterCheckbox extends React.Component {
         });
     }
 
+    setDisabled(disabled) {
+        console.log('Setting ' + this.props.value + ' disabled as ' + disabled);
+
+        this.setState({
+            disabled: disabled
+        });
+    }
+
     handleChange(event) {
         const { value } = this.props;
         console.log('handleChange ' + event.target.value);

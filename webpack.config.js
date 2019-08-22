@@ -26,6 +26,4 @@ module.exports = {
             template : 'src/index.html'
         })
     ],
-    stats: 'verbose'
-
 }

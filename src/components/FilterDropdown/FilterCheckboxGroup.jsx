@@ -31,6 +31,7 @@ class FilterCheckboxGroup extends React.Component {
             filteredReferences: [],
             references: [],
             checkedAlternatives: {},
+            disabledAlternatives: {},
             filteredAlternatives: [],
         }
 
@@ -62,8 +63,13 @@ class FilterCheckboxGroup extends React.Component {
         var checkedTmp = {
             [t]: false
         };
+
+        var disabledTmp = {
+            [t]: false
+        }
         values.map(item => {
             checkedTmp[item] = false;
+            disabledTmp[item] = false;
             //checkedTmp.push()
             alternativesArr.push(
                 <FilterCheckbox
@@ -74,14 +80,15 @@ class FilterCheckboxGroup extends React.Component {
                     ref={this.createAndReturnRef(item, false)}
                 />
             )
-            this.setState({
+            /*this.setState({
                 [item]: false
-            })
+            })*/
         });
 
         this.setState({
             alternatives: alternativesArr,
-            checkedAlternatives: checkedTmp
+            checkedAlternatives: checkedTmp,
+            disabledAlternatives: disabledTmp,
         });
         
     }
@@ -152,33 +159,46 @@ class FilterCheckboxGroup extends React.Component {
     }
 
     disableAllButOne(groupName, checkboxName) {
-        const { references } = this.state;
+        const { disabledAlternatives, references } = this.state;
 
+        var disabledTmp = disabledAlternatives;
         Object.keys(references).map(cb => {
             if (groupName === 'Kommune') {
                 if (cb !== regionInfo.find(r => r.code === checkboxName).name) {
-                    references[cb].current.toggleDisabled()
+                    references[cb].current.toggleDisabled();
+                    disabledTmp[cb] = true;
                 }
             } else {
                 if (cb !== checkboxName) {
                     references[cb].current.toggleDisabled()
+                    disabledTmp[cb] = true;
                 }
             }
         })
+
+        this.setState({
+            disabledAlternatives: disabledTmp
+        });
     }
 
     removeDisabling() {
-        const { references } = this.state;
+        const { disabledAlternatives, references } = this.state;
 
+        var disabledTmp = disabledAlternatives;
         Object.keys(references).map(cb => {
-            if (references[cb].current.state.disabled)
+            if (references[cb].current.state.disabled) {
                 references[cb].current.toggleDisabled();
-            
+                disabledTmp[cb] = false;
+            }
+        });
+
+        this.setState({
+            disabledAlternatives: disabledTmp
         });
     }
 
     searchForFilter(input) {
-        const { alternatives, checkedAlternatives, filtered, references } = this.state;
+        const { alternatives, checkedAlternatives, disabledAlternatives, filtered, references } = this.state;
         console.log(checkedAlternatives);
         var tmp = [];
         alternatives.map(alts => {
@@ -206,6 +226,7 @@ class FilterCheckboxGroup extends React.Component {
                         const { value } = alts.props;
         
                         references[value].current.setChecked(checkedAlternatives[value]);
+                        references[value].current.setDisabled(disabledAlternatives[value]);
                     });
                 });
             }

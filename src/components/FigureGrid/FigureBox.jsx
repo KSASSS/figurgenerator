@@ -283,7 +283,7 @@ class FigureBox extends React.Component {
                         <Button className={classes.swapButton} onClick={this.changeFigureGrouping}><Autorenew/></Button>
                     </Tooltip>
                     <Tooltip title="Endre fargevalg">
-                        <Button className={classes.colorButton}  onClick={this.changeFigureGrouping}><FormatPaint/></Button>
+                        <Button className={classes.colorButton} disabled onClick={this.changeFigureGrouping}><FormatPaint/></Button>
                     </Tooltip>
                     <Tooltip title="Fjern figur">
                         <Button className={classes.removeButton} onClick={this.removeFigureBox}><Close/></Button>

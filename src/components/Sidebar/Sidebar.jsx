@@ -29,7 +29,7 @@ const styles = theme => ({
     },
     drawerPaper: {
         width: drawerWidth,
-        height: 'calc(100% - 64px)',
+        height: 'calc(100% - 32px)',
         top: 32,
     },
     addFigureButton: {
