@@ -199,7 +199,7 @@ class FilterCheckboxGroup extends React.Component {
 
     searchForFilter(input) {
         const { alternatives, checkedAlternatives, disabledAlternatives, filtered, references } = this.state;
-        console.log(checkedAlternatives);
+
         var tmp = [];
         alternatives.map(alts => {
             const { value } = alts.props;
@@ -209,8 +209,6 @@ class FilterCheckboxGroup extends React.Component {
         });
 
         if (input.length >= 3) {
-            console.log(tmp);
-            
             //show the filtered version
             this.setState({
                 filteredAlternatives: tmp,
