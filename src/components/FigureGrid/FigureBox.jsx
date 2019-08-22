@@ -17,7 +17,12 @@ import Tooltip from '@material-ui/core/Tooltip';
 /* Paper import (brukes til å teste grid) */
 import Paper from "@material-ui/core/Paper";
 
-import { Autorenew, Close, FormatPaint, FormatTitle } from 'mdi-material-ui'
+//import { Autorenew, Close, FormatPaint, FormatTitle } from 'mdi-material-ui';
+// Icons to be used on the figurebox
+import Autorenew from 'mdi-material-ui/Autorenew';
+import Close from 'mdi-material-ui/Close';
+import FormatPaint from 'mdi-material-ui/FormatPaint';
+import FormatTitle from 'mdi-material-ui/FormatTitle';
 
 import Figure from './Figure.jsx'
 
@@ -298,7 +303,7 @@ class FigureBox extends React.Component {
                                 margin="dense"
                                 id="name"
                                 label="Ny tittel"
-                                type="email"
+                                //type="email"
                                 fullWidth
                             />
                         </DialogContent>

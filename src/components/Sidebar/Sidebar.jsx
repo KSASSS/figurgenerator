@@ -2,7 +2,7 @@ import React, {Component} from "react";
 
 /* Constants */
 import { indikatorURL, getMethod, regionInfo, validYears } from 'constants'
-import { Plus } from 'mdi-material-ui'
+import Plus  from 'mdi-material-ui/Plus'
 
 /* Dropdown imports */
 import FilterDropdown from 'components/FilterDropdown/FilterDropdown.jsx'
@@ -149,14 +149,6 @@ class Sidebar extends React.Component {
     render() {
         const { classes } = this.props;
         return (
-            /**
-             * <TextField 
-                        className={classes.searchfield} 
-                        type='text' 
-                        placeholder='Søk etter filter' 
-                        onChange={this.handleInput}
-                    />
-             */
                 <Box className={classes.root}>
                     <Button 
                         className={classes.addFigureButton} 

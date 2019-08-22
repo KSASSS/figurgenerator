@@ -209,13 +209,24 @@ class FilterCheckboxGroup extends React.Component {
         });
 
         if (input.length >= 3) {
-            //show the filtered version
+            console.log('Showing the filtered version');
+
             this.setState({
                 filteredAlternatives: tmp,
-                filtered: true,
+                filtered: true
+            }, () => {
+                // Set the checked and disabled values of the active checkboxes
+                Object.keys(references).map(checkbox => {
+                    console.log(checkbox);
+                    if (references[checkbox].current !== null) {
+                        references[checkbox].current.setChecked(checkedAlternatives[checkbox]);
+                        references[checkbox].current.setDisabled(disabledAlternatives[checkbox]);
+                    }
+                });
             });
             
         } else {
+            console.log('Showing the unfiltered version');
             if (filtered) {
                 this.setState({
                     filtered: false,

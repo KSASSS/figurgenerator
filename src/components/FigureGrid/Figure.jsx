@@ -1,13 +1,7 @@
 import React, { Component } from 'react';
 
-/* Grid imports*/
-import Grid from "@material-ui/core/Grid";
-
-/* Paper import (brukes til å teste grid) */
-import Paper from "@material-ui/core/Paper";
-
 /* Constants */
-import { figureColors, highchartsOptions, figureBaseUrl, getMethod, regionInfo } from 'constants'
+import { figureColors, highchartsOptions } from 'constants'
 
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
