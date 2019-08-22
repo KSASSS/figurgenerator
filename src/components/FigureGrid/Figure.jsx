@@ -15,7 +15,6 @@ export default class Figure extends React.Component {
             figure: [],
             figureType: 'column',
             pieData: [],
-            title: '',
             swapped: false,
             chartOptions: {},
             series: {},

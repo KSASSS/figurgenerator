@@ -69,12 +69,10 @@ class FigureBox extends React.Component {
         this.state = {
             figure: [],
             labelWidth: 0,
-            figureType: 1   ,
-            url: '',
+            figureType: 1,
             open: false,
             closed: true,
             titleInput: '',
-            pieCompatible: false,
             fetched: false,
         }
         this.inputLabel = React.createRef(null);

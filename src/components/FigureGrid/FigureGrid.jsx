@@ -21,7 +21,6 @@ class FigureGrid extends React.Component {
 
         this.state = {
             figureBoxes: [],
-            figureBoxTracker: [],
             figureCounter: 0,
         }
 

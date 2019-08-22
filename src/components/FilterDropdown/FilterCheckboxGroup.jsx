@@ -111,7 +111,7 @@ class FilterCheckboxGroup extends React.Component {
         const { references, filteredReferences} = this.state;
         var tmpRef;
 
-        if (filtered) {
+        /*if (filtered) {
             tmpRef = filteredReferences;
             tmpRef[id] = React.createRef();
             this.setState({
@@ -119,7 +119,7 @@ class FilterCheckboxGroup extends React.Component {
             });
 
             return filteredReferences[id];
-        } else {
+        } else {*/
             tmpRef = references;
             tmpRef[id] = React.createRef();
             this.setState({
@@ -127,7 +127,7 @@ class FilterCheckboxGroup extends React.Component {
             });
 
             return this.state.references[id];
-        }
+        //}
     }
 
     checkAll(checked) {
@@ -163,15 +163,17 @@ class FilterCheckboxGroup extends React.Component {
 
         var disabledTmp = disabledAlternatives;
         Object.keys(references).map(cb => {
-            if (groupName === 'Kommune') {
-                if (cb !== regionInfo.find(r => r.code === checkboxName).name) {
-                    references[cb].current.toggleDisabled();
-                    disabledTmp[cb] = true;
-                }
-            } else {
-                if (cb !== checkboxName) {
-                    references[cb].current.toggleDisabled()
-                    disabledTmp[cb] = true;
+            if (references[cb].current !== null) {
+                if (groupName === 'Kommune') {
+                    if (cb !== regionInfo.find(r => r.code === checkboxName).name) {
+                        references[cb].current.toggleDisabled();
+                        disabledTmp[cb] = true;
+                    }
+                } else {
+                    if (cb !== checkboxName) {
+                        references[cb].current.toggleDisabled()
+                        disabledTmp[cb] = true;
+                    }
                 }
             }
         })
@@ -186,9 +188,11 @@ class FilterCheckboxGroup extends React.Component {
 
         var disabledTmp = disabledAlternatives;
         Object.keys(references).map(cb => {
-            if (references[cb].current.state.disabled) {
-                references[cb].current.toggleDisabled();
-                disabledTmp[cb] = false;
+            if (references[cb].current !== null) {
+                if (references[cb].current.state.disabled) {
+                    references[cb].current.toggleDisabled();
+                    disabledTmp[cb] = false;
+                }
             }
         });
 

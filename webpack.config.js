@@ -20,7 +20,7 @@ module.exports = {
             constants: path.resolve(__dirname, './src/constants.jsx')
         }
     },
-    mode:'development',
+    mode:'production',
     plugins : [
         new HtmlWebpackPlugin ({
             template : 'src/index.html'
