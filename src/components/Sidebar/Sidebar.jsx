@@ -60,22 +60,12 @@ class Sidebar extends React.Component {
 
         this.filterGotChosen = this.filterGotChosen.bind(this);
         this.filterGotRemoved = this.filterGotRemoved.bind(this);
-        //this.handleInput = this.handleInput.bind(this);
-
-        //this.chosenFilterboxElement = React.createRef();
     }
 
     componentDidMount() {
-        //this.createRef("vfilter");
-        //this.setState({chosenFilters: <ChosenFilterbox ref={this.getRef('vfilter')} key='vfiltergrp' title='Valgte Filter' unMountChosenFilterbox={this.unMountChosenFilterbox} updateSidebar={this.filterGotRemoved}/>})
-
         fetch(`${indikatorURL}`, getMethod)
         .then(response => response.json())
         .then(result => {
-            /*var result = result.map(indikator => {
-                return indikator.charAt(0).toUpperCase() + indikator.slice(1);
-            })*/
-
             this.setState({
                 indikatorer: result.sort()
             });

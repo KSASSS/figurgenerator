@@ -156,7 +156,7 @@ class App extends React.Component {
         const { activeFilters, disabledGroupName } = this.state;
 
         var filterGroup = activeFilters[groupName];
-        var disabled = this.state.disabled;
+        var isDisabled = this.state.disabled;
         
         // Remove the unchecked filter from the activeFilter
         // Kommune is a special case as the codes are used when querying the API
@@ -175,14 +175,14 @@ class App extends React.Component {
             delete actTmp[groupName];
 
             // If it was the last filter in the group and disabled is true, then this is the disabled group
-            if (disabled) {
+            if (isDisabled) {
                 this.sidebarRef.current.removeDisabling(disabledGroupName);
-                disabled = !disabled;
+                isDisabled = !isDisabled;
             }
                 
             this.setState({
                 activeFilters: actTmp,
-                disabled: disabled
+                disabled: isDisabled
             })
         } else {
             actTmp[groupName] = filterGroup;
@@ -199,13 +199,13 @@ class App extends React.Component {
                 // with two or more indicators, remove the disabling
                 if (filterCount !== 2) {
                     this.sidebarRef.current.removeDisabling(this.state.disabledGroupName);
-                    disabled = false;
+                    isDisabled = false;
                 }
             }
 
             this.setState({
                 activeFilters: actTmp,
-                disabled: disabled
+                disabled: isDisabled
             })
         }
     }

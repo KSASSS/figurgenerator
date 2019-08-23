@@ -20,7 +20,7 @@ const styles = theme => ({
     },
   });
 
-class FilterCheckboxGroup extends React.Component {
+class FilterCheckboxGroup extends Component {
   
     constructor(props) {
         super(props);
@@ -35,11 +35,10 @@ class FilterCheckboxGroup extends React.Component {
             filteredAlternatives: [],
         }
 
-        this.checkboxGotUpdated = this.checkboxGotUpdated.bind(this);
-        this.searchForFilter = this.searchForFilter.bind(this);
-        //this.updateAlternatives = this.updateAlternatives.bind(this);
-        this.createAndReturnRef = this.createAndReturnRef.bind(this);
         this.checkAll = this.checkAll.bind(this);
+        this.checkboxGotUpdated = this.checkboxGotUpdated.bind(this);
+        this.createAndReturnRef = this.createAndReturnRef.bind(this);
+        this.searchForFilter = this.searchForFilter.bind(this);
     }
 
 
@@ -70,7 +69,7 @@ class FilterCheckboxGroup extends React.Component {
         values.map(item => {
             checkedTmp[item] = false;
             disabledTmp[item] = false;
-            //checkedTmp.push()
+
             alternativesArr.push(
                 <FilterCheckbox
                     key={this.props.groupTitle + item}
@@ -80,9 +79,6 @@ class FilterCheckboxGroup extends React.Component {
                     ref={this.createAndReturnRef(item, false)}
                 />
             )
-            /*this.setState({
-                [item]: false
-            })*/
         });
 
         this.setState({
@@ -111,23 +107,13 @@ class FilterCheckboxGroup extends React.Component {
         const { references, filteredReferences} = this.state;
         var tmpRef;
 
-        /*if (filtered) {
-            tmpRef = filteredReferences;
-            tmpRef[id] = React.createRef();
-            this.setState({
-                filteredReferences: tmpRef
-            });
+        tmpRef = references;
+        tmpRef[id] = React.createRef();
+        this.setState({
+            references: tmpRef
+        });
 
-            return filteredReferences[id];
-        } else {*/
-            tmpRef = references;
-            tmpRef[id] = React.createRef();
-            this.setState({
-                references: tmpRef
-            });
-
-            return this.state.references[id];
-        //}
+        return this.state.references[id];
     }
 
     checkAll(checked) {

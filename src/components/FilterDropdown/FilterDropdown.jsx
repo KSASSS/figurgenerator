@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/styles';
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import ChevronDown from 'mdi-material-ui/ChevronDown';
 
 /* Brukes som tittel på dropdownsmenyene */
 import Typography from "@material-ui/core/Typography";
@@ -59,12 +59,10 @@ class FilterDropdown extends React.Component {
   }
 
   updateCheckbox(name) {
-    console.log('updateCheckbox');
     this.checkboxReferences.current.changeCheckedState(name);
   }
 
   searchForFilter(input) {
-    console.log('searchForFilter');
     this.checkboxReferences.current.updateAlternatives(input);
   }
 
@@ -83,12 +81,10 @@ class FilterDropdown extends React.Component {
   render() {
     const { classes, searchAble } = this.props;
     return (
-      /*{this.props.title === 'Indikator' ? <Button/> : null}*/
       <div className='filterdropdown'>
-        
         <ExpansionPanel defaultExpanded={false}>
           <ExpansionPanelSummary
-            expandIcon={<ExpandMoreIcon />}
+            expandIcon={<ChevronDown />}
             aria-controls="panel1a-content"
             id="panel1a-header"
           >

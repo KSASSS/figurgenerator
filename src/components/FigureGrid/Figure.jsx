@@ -131,7 +131,6 @@ export default class Figure extends React.Component {
             })
         });
 
-            
         var options = {
             series: newSeries,
             xAxis: {

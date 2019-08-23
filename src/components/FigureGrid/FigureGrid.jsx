@@ -30,12 +30,8 @@ class FigureGrid extends React.Component {
     addFigureBox(activeFilters) {
         const { figureBoxes, figureCounter } = this.state;
         var newAF = JSON.parse(JSON.stringify(activeFilters));
-        console.log('Adding a new figurebox with id figure' + figureCounter);
-        console.log(newAF);
-        console.log(JSON.stringify(activeFilters));
-        console.log(JSON.parse(JSON.stringify(activeFilters)));
-        console.log(activeFilters);
         var title = '';
+        
         if (newAF.Indikator.length === 1){
             title = newAF.Indikator[0];
         } else if (newAF.Kommune.length === 1) {
