@@ -1,13 +1,7 @@
 import React, {Component} from "react";
 
 /* Checkbox imports */
-import FormLabel from "@material-ui/core/FormLabel";
-import FormControl from "@material-ui/core/FormControl";
 import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Checkbox from "@material-ui/core/Checkbox";
-import Button from '@material-ui/core/Button';
 
 import FilterCheckbox from 'components/FilterDropdown/FilterCheckbox.jsx';
 
@@ -26,7 +20,7 @@ const styles = theme => ({
     },
   });
 
-class FilterCheckboxGroup extends React.Component {
+class FilterCheckboxGroup extends Component {
   
     constructor(props) {
         super(props);
@@ -36,13 +30,15 @@ class FilterCheckboxGroup extends React.Component {
             alternatives: [],
             filteredReferences: [],
             references: [],
-            checkedAlternatives: [],
+            checkedAlternatives: {},
+            disabledAlternatives: {},
+            filteredAlternatives: [],
         }
 
-        this.checkboxGotUpdated = this.checkboxGotUpdated.bind(this);
-        this.updateAlternatives = this.updateAlternatives.bind(this);
-        this.createAndReturnRef = this.createAndReturnRef.bind(this);
         this.checkAll = this.checkAll.bind(this);
+        this.checkboxGotUpdated = this.checkboxGotUpdated.bind(this);
+        this.createAndReturnRef = this.createAndReturnRef.bind(this);
+        this.searchForFilter = this.searchForFilter.bind(this);
     }
 
 
@@ -60,8 +56,20 @@ class FilterCheckboxGroup extends React.Component {
                 ref={this.createAndReturnRef('Merk/fjern alle', false)}
             />
         ]
+
+        var t = 'Merk/fjern alle'
         
+        var checkedTmp = {
+            [t]: false
+        };
+
+        var disabledTmp = {
+            [t]: false
+        }
         values.map(item => {
+            checkedTmp[item] = false;
+            disabledTmp[item] = false;
+
             alternativesArr.push(
                 <FilterCheckbox
                     key={this.props.groupTitle + item}
@@ -71,23 +79,27 @@ class FilterCheckboxGroup extends React.Component {
                     ref={this.createAndReturnRef(item, false)}
                 />
             )
-            this.setState({
-                [item]: false
-            })
         });
 
         this.setState({
-            Alle: false,
-            alternatives: alternativesArr
+            alternatives: alternativesArr,
+            checkedAlternatives: checkedTmp,
+            disabledAlternatives: disabledTmp,
         });
         
     }
 
 
     checkboxGotUpdated(name, checked) {
+        const { checkedAlternatives } = this.state;
+
         this.props.updateFilterDropdown(name, checked);
+
+        var checkedTmp = checkedAlternatives;
+        checkedTmp[name] = checked;
+
         this.setState({
-            [name]: checked
+            checkedAlternatives: checkedTmp
         })
     }
 
@@ -95,101 +107,129 @@ class FilterCheckboxGroup extends React.Component {
         const { references, filteredReferences} = this.state;
         var tmpRef;
 
-        if (filtered) {
-            tmpRef = filteredReferences;
-            tmpRef[id] = React.createRef();
-            this.setState({
-                filteredReferences: tmpRef
-            });
-
-            return filteredReferences[id];
-        } else {
-            tmpRef = references;
-            tmpRef[id] = React.createRef();
-            this.setState({
-                references: tmpRef
-            });
-
-            return this.state.references[id];
-        }
-    }
-
-    updateAlternatives(input) {
-        if (input === '') {
-
-            this.setState({
-                filtered: false
-            }, () => {
-                this.state.alternatives.map(alts => {
-                    this.state.references[alts.props.value].current.setChecked(this.state[alts.props.value]);
-                });
-            });
-            return;
-        }
-        
-        var tmp = this.state.alternatives.map(alts => {
-            if (alts.props.value.toLowerCase().match(input) !== null) {
-                return (
-                    <FilterCheckbox 
-                        value={alts.props.value} 
-                        defaultCheckValue={this.state[alts.props.value]} 
-                        checkboxGotUpdated={this.checkboxGotUpdated} 
-                        ref={this.createAndReturnRef(alts.props.value, true)}
-                    />
-                )
-            }
-        });
-
+        tmpRef = references;
+        tmpRef[id] = React.createRef();
         this.setState({
-            filtered: true,
-            filteredAlternatives: tmp,
+            references: tmpRef
         });
+
+        return this.state.references[id];
     }
 
     checkAll(checked) {
         console.log('Changed checked value of all to ' + checked);
-        const { references } = this.state;
+        const { checkedAlternatives, references } = this.state;
 
         Object.keys(references).map(cb => {
             if (cb !== 'Merk/fjern alle') {
                 this.props.updateFilterDropdown(cb, checked);
                 references[cb].current.setChecked(checked);
+
+                var checkedTmp = checkedAlternatives;
+                checkedTmp[cb] = checked;
+
                 this.setState({
-                    [cb]: checked
+                    checkedAlternatives: checkedTmp
                 })
             } else {
                 references[cb].current.setChecked(checked);
+
+                var checkedTmp = checkedAlternatives;
+                checkedTmp[cb] = checked;
+
                 this.setState({
-                    [cb]: checked
+                    checkedAlternatives: checkedTmp
                 })
             }
         });
     }
 
     disableAllButOne(groupName, checkboxName) {
-        const { references } = this.state;
+        const { disabledAlternatives, references } = this.state;
 
+        var disabledTmp = disabledAlternatives;
         Object.keys(references).map(cb => {
-            if (groupName === 'Kommune') {
-                if (cb !== regionInfo.find(r => r.code === checkboxName).name) {
-                    references[cb].current.toggleDisabled()
-                }
-            } else {
-                if (cb !== checkboxName) {
-                    references[cb].current.toggleDisabled()
+            if (references[cb].current !== null) {
+                if (groupName === 'Kommune') {
+                    if (cb !== regionInfo.find(r => r.code === checkboxName).name) {
+                        references[cb].current.toggleDisabled();
+                        disabledTmp[cb] = true;
+                    }
+                } else {
+                    if (cb !== checkboxName) {
+                        references[cb].current.toggleDisabled()
+                        disabledTmp[cb] = true;
+                    }
                 }
             }
         })
+
+        this.setState({
+            disabledAlternatives: disabledTmp
+        });
     }
 
     removeDisabling() {
-        const { references } = this.state;
+        const { disabledAlternatives, references } = this.state;
 
+        var disabledTmp = disabledAlternatives;
         Object.keys(references).map(cb => {
-            if (references[cb].current.state.disabled)
-                references[cb].current.toggleDisabled();
-            
+            if (references[cb].current !== null) {
+                if (references[cb].current.state.disabled) {
+                    references[cb].current.toggleDisabled();
+                    disabledTmp[cb] = false;
+                }
+            }
         });
+
+        this.setState({
+            disabledAlternatives: disabledTmp
+        });
+    }
+
+    searchForFilter(input) {
+        const { alternatives, checkedAlternatives, disabledAlternatives, filtered, references } = this.state;
+
+        var tmp = [];
+        alternatives.map(alts => {
+            const { value } = alts.props;
+            if (value.toLowerCase().match(input) !== null && value !== 'Merk/fjern alle') {
+                tmp.push(alts)
+            } 
+        });
+
+        if (input.length >= 3) {
+            console.log('Showing the filtered version');
+
+            this.setState({
+                filteredAlternatives: tmp,
+                filtered: true
+            }, () => {
+                // Set the checked and disabled values of the active checkboxes
+                Object.keys(references).map(checkbox => {
+                    console.log(checkbox);
+                    if (references[checkbox].current !== null) {
+                        references[checkbox].current.setChecked(checkedAlternatives[checkbox]);
+                        references[checkbox].current.setDisabled(disabledAlternatives[checkbox]);
+                    }
+                });
+            });
+            
+        } else {
+            console.log('Showing the unfiltered version');
+            if (filtered) {
+                this.setState({
+                    filtered: false,
+                }, () => {
+                    alternatives.map(alts => {
+                        const { value } = alts.props;
+        
+                        references[value].current.setChecked(checkedAlternatives[value]);
+                        references[value].current.setDisabled(disabledAlternatives[value]);
+                    });
+                });
+            }
+        }
     }
 
     render() {

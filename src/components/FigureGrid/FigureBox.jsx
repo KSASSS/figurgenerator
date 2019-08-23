@@ -1,29 +1,28 @@
 import React, { Component } from 'react';
 
-/* Grid imports*/
-import Grid from "@material-ui/core/Grid";
-
 import Button from '@material-ui/core/Button';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
-import Input from "@material-ui/core/Input";
-
-import Box from '@material-ui/core/Box';
 
 /* Endre tittel imports */
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+
+import Tooltip from '@material-ui/core/Tooltip';
 
 /* Paper import (brukes til å teste grid) */
 import Paper from "@material-ui/core/Paper";
 
-import { Autorenew, Close } from 'mdi-material-ui'
+//import { Autorenew, Close, FormatPaint, FormatTitle } from 'mdi-material-ui';
+// Icons to be used on the figurebox
+import Autorenew from 'mdi-material-ui/Autorenew';
+import Close from 'mdi-material-ui/Close';
+import FormatPaint from 'mdi-material-ui/FormatPaint';
+import FormatTitle from 'mdi-material-ui/FormatTitle';
 
 import Figure from './Figure.jsx'
 
@@ -42,14 +41,24 @@ const styles = theme => ({
         
     },
     removeButton: {
-        color: 'red',
-        width: '33%',
+        width: '25%',
     },
     titleButton: {
-        width: '33%',
+        width: '25%',
     },
     swapButton: {
-        width: '33%',
+        width: '25%',
+        /*'&:hover': {
+            color: '#1AE9EF'
+        },*/
+    },
+    colorButton: {
+        width: '25%',
+        //background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
+        /*'&:hover': {
+            
+            //color: 'linear-gradient(to left, #EE82EE, #4B0082, #0000ff, #008000, #ffff00, #ffa500, #ff0000)'
+        },*/
     }
   });
 
@@ -60,23 +69,24 @@ class FigureBox extends React.Component {
         this.state = {
             figure: [],
             labelWidth: 0,
-            figureType: 1   ,
-            url: '',
+            figureType: 1,
             open: false,
             closed: true,
             titleInput: '',
-            pieCompatible: false,
             fetched: false,
         }
         this.inputLabel = React.createRef(null);
+        this.figureElement = React.createRef();
         this.titleField = React.createRef();
 
-        this.changeFigureType = this.changeFigureType.bind(this);
-        this.figureElement = React.createRef();
-        this.removeFigureBox = this.removeFigureBox.bind(this);
-        this.changeFigureTitle = this.changeFigureTitle.bind(this);
         this.changeFigureGrouping = this.changeFigureGrouping.bind(this);
+        this.changeFigureTitle = this.changeFigureTitle.bind(this);
+        this.changeFigureType = this.changeFigureType.bind(this);
 
+        
+        this.removeFigureBox = this.removeFigureBox.bind(this);
+
+        // Input window functions
         this.handleClose = this.handleClose.bind(this);
         this.handleOpen = this.handleOpen.bind(this);
         this.handleInput = this.handleInput.bind(this);
@@ -124,7 +134,6 @@ class FigureBox extends React.Component {
 
     createCategoryAndSeriesData(data) {
         const { measures, regions, years} = this.props;
-        console.log('createCategoryAndSeriesData');
 
         var result = {
             series: [],
@@ -251,7 +260,7 @@ class FigureBox extends React.Component {
     render() {
         const { figureType, fetched } = this.state;
         const { classes } = this.props;
-        return(
+        return (
             fetched ? 
             <div className={classes.root}>
                 <Paper className={classes.paper}>                     
@@ -270,9 +279,18 @@ class FigureBox extends React.Component {
                         <MenuItem key='pieItem' disabled value={4}>Pai</MenuItem>
                     </Select>
                     {this.state.figure}
-                    <Button className={classes.titleButton} onClick={this.handleOpen} >Endre tittel</Button>
-                    <Button className={classes.swapButton} onClick={this.changeFigureGrouping}><Autorenew/></Button>
-                    <Button className={classes.removeButton} onClick={this.removeFigureBox}>Fjern figur<Close /></Button>
+                    <Tooltip title="Endre tittel">
+                        <Button className={classes.titleButton} onClick={this.handleOpen}><FormatTitle/></Button>
+                    </Tooltip>
+                    <Tooltip title="Endre gruppering">
+                        <Button className={classes.swapButton} onClick={this.changeFigureGrouping}><Autorenew/></Button>
+                    </Tooltip>
+                    <Tooltip title="Endre fargevalg">
+                        <Button className={classes.colorButton} disabled onClick={this.changeFigureGrouping}><FormatPaint/></Button>
+                    </Tooltip>
+                    <Tooltip title="Fjern figur">
+                        <Button className={classes.removeButton} onClick={this.removeFigureBox}><Close/></Button>
+                    </Tooltip>
                     <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
                         <DialogTitle id="form-dialog-title">Endre tittel</DialogTitle>
                         <DialogContent>
@@ -283,7 +301,7 @@ class FigureBox extends React.Component {
                                 margin="dense"
                                 id="name"
                                 label="Ny tittel"
-                                type="email"
+                                //type="email"
                                 fullWidth
                             />
                         </DialogContent>

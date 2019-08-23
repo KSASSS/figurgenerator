@@ -1,11 +1,12 @@
 var path = require('path');
 var HtmlWebpackPlugin =  require('html-webpack-plugin');
+//const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
     entry : './src/index.js',
     output : {
         path : path.resolve(__dirname , 'build'),
-        filename: 'index_bundle.js'
+        filename: 'main.js'
     },
     module : {
         rules : [
@@ -20,11 +21,11 @@ module.exports = {
             constants: path.resolve(__dirname, './src/constants.jsx')
         }
     },
-    mode:'development',
+    mode:'production',
     plugins : [
         new HtmlWebpackPlugin ({
             template : 'src/index.html'
-        })
-    ]
-
+        })/*,
+        new BundleAnalyzerPlugin()*/
+    ],
 }

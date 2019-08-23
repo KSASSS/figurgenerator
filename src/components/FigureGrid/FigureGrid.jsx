@@ -1,11 +1,5 @@
 import React, { Component } from 'react';
 
-/* Grid imports*/
-import Grid from "@material-ui/core/Grid";
-
-/* Paper import (brukes til å teste grid) */
-import Paper from "@material-ui/core/Paper";
-
 import Box from '@material-ui/core/Box';
 
 /* FigurBox imports */
@@ -27,7 +21,6 @@ class FigureGrid extends React.Component {
 
         this.state = {
             figureBoxes: [],
-            figureBoxTracker: [],
             figureCounter: 0,
         }
 
@@ -37,16 +30,12 @@ class FigureGrid extends React.Component {
     addFigureBox(activeFilters) {
         const { figureBoxes, figureCounter } = this.state;
         var newAF = JSON.parse(JSON.stringify(activeFilters));
-        console.log('Adding a new figurebox with id figure' + figureCounter);
-        console.log(newAF);
-        console.log(JSON.stringify(activeFilters));
-        console.log(JSON.parse(JSON.stringify(activeFilters)));
-        console.log(activeFilters);
         var title = '';
+        
         if (newAF.Indikator.length === 1){
             title = newAF.Indikator[0];
-        } else if (newAF.Region.length === 1) {
-            title = regionInfo.find(r => r.code === newAF.Region[0]).name;
+        } else if (newAF.Kommune.length === 1) {
+            title = regionInfo.find(r => r.code === newAF.Kommune[0]).name;
         } else {
             title = newAF.År[0];
         }

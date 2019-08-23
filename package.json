@@ -1,5 +1,6 @@
 {
   "name": "figurgenerator",
+  "sideEffects": false,
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,14 +13,15 @@
   "scripts": {
     "create": "webpack-dev-server --open",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack"
+    "build": "webpack",
+    "build-analyze": "webpack --profile --json > stats.json",
+    "analyze": "source-map-explorer build/main.*"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@material-ui/core": "^4.2.0",
-    "@material-ui/icons": "^4.2.1",
     "highcharts": "^7.1.2",
     "highcharts-react-official": "^2.2.2",
     "material-design-icons-iconfont": "^5.0.1",
@@ -34,8 +36,10 @@
     "babel-loader": "^8.0.6",
     "css-loader": "^3.0.0",
     "html-webpack-plugin": "^3.2.0",
+    "source-map-explorer": "^2.0.1",
     "style-loader": "^0.23.1",
     "webpack": "^4.35.3",
+    "webpack-bundle-analyzer": "^3.4.1",
     "webpack-cli": "^3.3.6",
     "webpack-dev-server": "^3.7.2"
   }
