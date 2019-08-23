@@ -139,24 +139,24 @@ class Sidebar extends React.Component {
     render() {
         const { classes } = this.props;
         return (
-                <Box className={classes.root}>
-                    <Button 
-                        className={classes.addFigureButton} 
-                        onClick={this.props.createFigureBox}
-                        p={0}
-                    >
-                        <Plus className='button'/>Generer figur
-                    </Button>
-                    <Drawer
-                        className={classes.drawer}
-                        variant="permanent"
-                        classes={{
-                            paper: classes.drawerPaper,
-                        }}
-                        anchor="left"
-                    >
-                        {this.state.filterDropdowns}
-                    </Drawer>
+            <Box className={classes.root}>
+                <Button 
+                    className={classes.addFigureButton} 
+                    onClick={this.props.createFigureBox}
+                    p={0}
+                >
+                    <Plus className='button'/>Generer figur
+                </Button>
+                <Drawer
+                    className={classes.drawer}
+                    variant="permanent"
+                    classes={{
+                        paper: classes.drawerPaper,
+                    }}
+                    anchor="left"
+                >
+                    {this.state.filterDropdowns}
+                </Drawer>
             </Box>
         )
     }
