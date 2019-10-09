@@ -9,6 +9,7 @@ import { withStyles } from '@material-ui/styles';
 const styles = theme => ({
     checkbox: {
         fontSize: 12,
+        fontFamily: 'SourceSansProRegular',
     },
     allCheckbox: {
         width: '100%',
@@ -81,13 +82,13 @@ class FilterCheckbox extends React.Component {
     }
 
     render() {
-        const { classes/*, value*/ } = this.props;
+        const { checkboxGroup, classes/*, value*/ } = this.props;
         const { checked, disabled, value } = this.state;
         return (
             <FormControlLabel className={value === 'Merk/fjern alle' ? classes.allCheckbox: classes.checkbox}
                 label={
                     <Typography className={classes.checkbox}>
-                        {value}
+                        {checkboxGroup === 'Indikator' ? value.slice(3, value.length) : value}
                     </Typography>
                 }
                 control= {

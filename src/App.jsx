@@ -12,7 +12,7 @@ import Sidebar from './components/Sidebar/Sidebar.jsx'
 /* Figurområde imports */
 import FigureGrid from './components/FigureGrid/FigureGrid.jsx'
 
-import { regionInfo } from 'constants'
+import { dropdownMenuNames, regionInfo } from 'constants'
 
 const styles = theme => ({
     root: {
@@ -45,6 +45,18 @@ class App extends React.Component {
         this.sidebarRef = React.createRef();
     }
 
+    componentDidMount() {
+        var tmpArr = {};
+
+        dropdownMenuNames.map(menuName => {
+            tmpArr[menuName] = [];
+        });
+
+        this.setState({
+            activeFilters: tmpArr
+        });
+    }
+
     /**
      * Adds an active filter, a filter that is checked to the list of activefilters
      * 
@@ -67,8 +79,8 @@ class App extends React.Component {
         var uniqueFilter = uniqueFilterName;
 
         var actTmp = activeFilters;
-
-        if (filterGroup === undefined) {
+        console.log('app');
+        /*if (filterGroup === undefined) {
             console.log('Filtergroup does not exist, creating it');
 
             actTmp[groupName] = [filterName];
@@ -98,32 +110,38 @@ class App extends React.Component {
                 disabledGroupName: disabledGroup,
                 uniqueFilterName: uniqueFilter
             });
-        } else {
+        } else {*/
             // Filter is already added, should just stop
             // Occurs when alle button is pushed and the filter is already in the list
             if (actTmp[groupName].includes(filterName))
                 return;
 
+            console.log('past return');
             actTmp[groupName].push(filterName);
 
             // Count filtergroups with 2 or more checked filters and also find the unique filter
-            if (Object.keys(actTmp).length === 3) {
+            //if (Object.keys(actTmp).length === 3) {
                 Object.keys(actTmp).map(item => {
                     if (actTmp[item].length >= 2) {
                         filterCount++;
                     } else {
                         disabledGroup = item;
-                        uniqueFilter = actTmp[item][0];
+                        if (actTmp[item].length === 0)
+                            uniqueFilter = 'Merk/fjern alle';
+                        else
+                            uniqueFilter = actTmp[item][0];
                     }
                 })
 
                 // Two filtergroups have two or more checked filters, disable unchecked ones in the 
                 // filtergroup with only one checked
-                if (filterCount === 2 && !disabled) {
+                if (filterCount === 2 && uniqueFilter === 'Merk/fjern alle') {
+                    this.sidebarRef.current.disableCheckboxes(disabledGroup, uniqueFilter);
+                } else if (filterCount === 2 && !disabled) {
                     this.sidebarRef.current.disableCheckboxes(disabledGroup, uniqueFilter);
                     disabled = true;
                 }
-            }
+            //}
 
             this.setState({
                 activeFilters: actTmp,
@@ -131,7 +149,7 @@ class App extends React.Component {
                 disabledGroupName: disabledGroup,
                 uniqueFilterName: uniqueFilter
             })
-        }
+        //}
     }
 
     /** Creates a new figurebox
@@ -168,15 +186,16 @@ class App extends React.Component {
         }
         
         var actTmp = activeFilters;
-
+        console.log(actTmp);
         // Was the last filter in the group, removing the group from activeFilters
         if (filterGroup.length === 0) {
             //var actTmp = this.state.activeFilters;
-            delete actTmp[groupName];
-
+            //delete actTmp[groupName];
+            actTmp[groupName] = filterGroup;
+            
             // If it was the last filter in the group and disabled is true, then this is the disabled group
             if (isDisabled) {
-                this.sidebarRef.current.removeDisabling(disabledGroupName);
+                this.sidebarRef.current.removeDisablingAllButOne(disabledGroupName, 'Merk/fjern alle');
                 isDisabled = !isDisabled;
             }
                 
@@ -186,7 +205,7 @@ class App extends React.Component {
             })
         } else {
             actTmp[groupName] = filterGroup;
-
+            console.log(actTmp);
             var filterCount = 0;
             if (Object.keys(actTmp).length === 3) {
                 Object.keys(actTmp).map(item => {
@@ -214,12 +233,12 @@ class App extends React.Component {
         const { classes } = this.props;
 
         return(
-            <div>
+            //<div>
             <Box className={classes.root} m={0}>
                 <Sidebar addActiveFilters={this.addActiveFilters} removeActiveFilters={this.removeActiveFilters} createFigureBox={this.createFigureBox} ref={this.sidebarRef}/>
                 <FigureGrid className={classes.content} ref={this.figureGridElement}/>
             </Box>
-            </div>
+            //</div>
         );
     }
 }

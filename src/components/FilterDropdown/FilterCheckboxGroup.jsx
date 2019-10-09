@@ -44,14 +44,16 @@ class FilterCheckboxGroup extends Component {
 
     /* On mount create the checkbox alternatives */
     componentDidMount() {
-        const { classes, values } = this.props;
+        const { classes, groupTitle, values } = this.props;
+        console.log(groupTitle);
         var alternativesArr = [
             <FilterCheckbox
                 className={classes.allCheckbox}
                 key={this.props.groupTitle + 'Merk/fjern alle'}
-                value={'Merk/fjern alle'} 
-                defaultCheckValue={false} 
-                checkAll={this.checkAll} 
+                value={'Merk/fjern alle'}
+                defaultCheckValue={false}
+                //checkBoxGroup={groupTitle}
+                checkAll={this.checkAll}
                 checkboxGotUpdated={this.checkboxGotUpdated} 
                 ref={this.createAndReturnRef('Merk/fjern alle', false)}
             />
@@ -75,6 +77,7 @@ class FilterCheckboxGroup extends Component {
                     key={this.props.groupTitle + item}
                     value={item} 
                     defaultCheckValue={false} 
+                    checkboxGroup={groupTitle}
                     checkboxGotUpdated={this.checkboxGotUpdated} 
                     ref={this.createAndReturnRef(item, false)}
                 />
@@ -146,23 +149,29 @@ class FilterCheckboxGroup extends Component {
 
     disableAllButOne(groupName, checkboxName) {
         const { disabledAlternatives, references } = this.state;
+        console.log('FBCG');
 
         var disabledTmp = disabledAlternatives;
-        Object.keys(references).map(cb => {
-            if (references[cb].current !== null) {
-                if (groupName === 'Kommune') {
-                    if (cb !== regionInfo.find(r => r.code === checkboxName).name) {
-                        references[cb].current.toggleDisabled();
-                        disabledTmp[cb] = true;
-                    }
-                } else {
-                    if (cb !== checkboxName) {
-                        references[cb].current.toggleDisabled()
-                        disabledTmp[cb] = true;
+        if (checkboxName === 'Merk/fjern alle') {
+            references[checkboxName].current.setDisabled(true);
+            disabledTmp[checkboxName] = true;
+        } else {
+            Object.keys(references).map(cb => {
+                if (references[cb].current !== null) {
+                    if (groupName === 'Kommune') {
+                        if (cb !== regionInfo.find(r => r.code === checkboxName).name) {
+                            references[cb].current.setDisabled(true);
+                            disabledTmp[cb] = true;
+                        }
+                    } else {
+                        if (cb !== checkboxName) {
+                            references[cb].current.setDisabled(true)
+                            disabledTmp[cb] = true;
+                        }
                     }
                 }
-            }
-        })
+            });
+        }
 
         this.setState({
             disabledAlternatives: disabledTmp
@@ -176,7 +185,28 @@ class FilterCheckboxGroup extends Component {
         Object.keys(references).map(cb => {
             if (references[cb].current !== null) {
                 if (references[cb].current.state.disabled) {
-                    references[cb].current.toggleDisabled();
+                    references[cb].current.setDisabled(false);
+                    disabledTmp[cb] = false;
+                }
+            }
+        });
+
+        this.setState({
+            disabledAlternatives: disabledTmp
+        });
+    }
+
+    removeDisablingAllButOne(checkboxName) {
+        const { disabledAlternatives, references } = this.state;
+
+        var disabledTmp = disabledAlternatives;
+        Object.keys(references).map(cb => {
+            if (cb === checkboxName)
+                return;
+                
+            if (references[cb].current !== null) {
+                if (references[cb].current.state.disabled) {
+                    references[cb].current.setDisabled(false);
                     disabledTmp[cb] = false;
                 }
             }

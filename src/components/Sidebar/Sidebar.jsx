@@ -13,7 +13,7 @@ import Box from '@material-ui/core/Box';
 
 import { withStyles } from '@material-ui/styles';
 
-import { drawerWidth } from 'constants'
+import { drawerWidth, dropdownMenuNames } from 'constants'
 
 import Drawer from '@material-ui/core/Drawer';
 
@@ -76,6 +76,30 @@ class Sidebar extends React.Component {
                 return item.name;
             })
 
+            dropdownMenuNames.map(menuName => {
+                var data  = [];
+
+                if (menuName === 'Kommune') {
+                    data = regions;
+                } else if (menuName === 'År') {
+                    data = validYears;
+                } else {
+                    data = this.state.indikatorer;
+                }
+
+                this.createRef(menuName);
+
+                tmpArr.push(
+                    <FilterDropdown 
+                        key={menuName}
+                        title={menuName}
+                        values={data}
+                        ref={this.getRef(menuName)}
+                        updateSidebar={this.filterGotChosen}
+                    />
+                )
+            })
+            /*
             this.createRef("Kommune");
             tmpArr.push(<FilterDropdown key='kommune' ref={this.getRef('Kommune')} updateSidebar={this.filterGotChosen} title='Kommune' values={regions}/>);
 
@@ -84,7 +108,7 @@ class Sidebar extends React.Component {
 
             this.createRef("Indikator");
             tmpArr.push(<FilterDropdown key='indikator' searchAble ref={this.getRef('Indikator')} updateSidebar={this.filterGotChosen} title='Indikator' values={this.state.indikatorer}/>);
-
+            */
             this.setState({filterDropdowns: tmpArr})
         })
    
@@ -126,7 +150,7 @@ class Sidebar extends React.Component {
 
     disableCheckboxes(groupName, checkboxName) {
         const { references } = this.state;
-
+        console.log('sidebar');
         references[groupName].current.disableAllButOne(groupName, checkboxName);
     }
 
@@ -134,6 +158,12 @@ class Sidebar extends React.Component {
         const { references } = this.state;
 
         references[groupName].current.removeDisabling();
+    }
+
+    removeDisablingAllButOne(groupName, checkboxName) {
+        const { references } = this.state;
+
+        references[groupName].current.removeDisablingAllButOne(checkboxName);
     }
 
     render() {

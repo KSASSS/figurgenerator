@@ -21,6 +21,9 @@ const styles = theme => ({
     overflowY: 'auto',
     maxHeight: 500,
   },
+  dropdownTitle: {
+    fontFamily: 'FuturaMedium',
+  },
   searchfield: {
     width: '80%',
     paddingLeft: 10,
@@ -72,11 +75,16 @@ class FilterDropdown extends React.Component {
   }
 
   disableAllButOne(groupName, checkboxName) {
+    console.log('filterdropdown');
     this.checkboxReferences.current.disableAllButOne(groupName, checkboxName);
   }
 
   removeDisabling() {
     this.checkboxReferences.current.removeDisabling();
+  }
+
+  removeDisablingAllButOne(checkboxName) {
+    this.checkboxReferences.current.removeDisablingAllButOne(checkboxName);
   }
 
   handleInput() {
@@ -93,7 +101,7 @@ class FilterDropdown extends React.Component {
             aria-controls="panel1a-content"
             id="panel1a-header"
           >
-            <Typography>{this.props.title}</Typography>
+            <Typography className={classes.dropdownTitle}>{this.props.title}</Typography>
           </ExpansionPanelSummary>
           {searchAble ?
             <TextField 

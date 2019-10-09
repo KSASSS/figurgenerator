@@ -6,6 +6,12 @@ export const figureBaseUrl = 'https://statistikk-test.ks.no/api/RegionInfo/Dynam
 //export const indikatorURL = 'https://statistikk-test.ks.no/api/ConnectionInfo/Validmeasures?'
 //export const figureBaseUrl = 'https://statistikk-test.ks.no/api/RegionInfo/DynamicData?'
 
+export const dropdownMenuNames = [
+    'Kommune',
+    'År',
+    'Indikator'
+]
+
 export const getMethod = {
     method: 'GET',
     mode: 'cors',
