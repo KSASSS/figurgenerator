@@ -19,7 +19,7 @@
   "dependencies": {
     "@material-ui/core": "^4.2.0",
     "@material-ui/icons": "^4.2.1",
-    "highcharts": "^7.1.2",
+    "highcharts": "^9.0.0",
     "highcharts-react-official": "^2.2.2",
     "material-design-icons-iconfont": "^5.0.1",
     "mdi-material-ui": "^6.1.0",
